@@ -312,57 +312,80 @@ namespace Game.Resource
             return null;
         }
 
-        /// <summary>
-        /// 读取资源
-        /// </summary>
-        /// <param name="path"></param>
-        /// <param name="resName"></param>
-        /// <returns></returns>
-        public static object Load(string path, string resName)
-        {
-			return Load(path,RESOURCE_TYPE.WEB_OBJECT, resName);
-        }
+		/// <summary>
+		/// load the resource in assetbundle.
+		/// </summary>
+		/// <returns>The asset.</returns>
+		/// <param name="path">Path.</param>
+		/// <param name="name">Name.</param>
+		public static UnityEngine.Object LoadAsset( string path , string name )
+		{
+			if (s_cInstance.m_mapRes.ContainsKey(path))
+			{
+				s_cInstance.m_mapRes[path].Used();
+				if (s_cInstance.m_mapRes[path].GetAssetObject() is AssetBundle)
+				{
+					return (s_cInstance.m_mapRes[path].GetAssetObject() as AssetBundle).Load(name);
+				}
+			}
+			else
+			{
+				Debug.LogError("Resource is null. path " + path);
+			}
+			return null;
+		}
 
-        /// <summary>
-        /// 获取资源
-        /// </summary>
-        /// <param name="path"></param>
-        /// <returns></returns>
-        public static object Load(string path, RESOURCE_TYPE resType, string resName)
-        {
-            if ((int)resType >= (int)RESOURCE_TYPE.WEB_RESOURCES && (int)resType <= (int)RESOURCE_TYPE.WEB_MAX )
-            {
-				if (s_cInstance.m_mapRes.ContainsKey(path))
-                {
-					s_cInstance.m_mapRes[path].Used();
-                    if (resType == RESOURCE_TYPE.WEB_TEXT_STR)
-                    {
-						string obj = (string)s_cInstance.m_mapRes[path].GetAssetObject();
-                        return obj;
-                    }
-                    else
-                    {
-						UnityEngine.Object res = ((AssetBundle)s_cInstance.m_mapRes[path].GetAssetObject()).Load(resName);
-                        return res;
-                    }
-                }
-                else
-                {
-                    Debug.LogError("Resource is null. path " + path + " resName " + resName);
-                }
-            }
-            else if ((int)resType >= (int)RESOURCE_TYPE.LOC_RESOURCES && (int)resType <= (int)RESOURCE_TYPE.LOC_MAX)
-            {
-				UnityEngine.Object obj = LoadEditor(resName);
-				return obj;
-            }
-            else if ((int)resType >= (int)RESOURCE_TYPE.PC_RESOURCES && (int)resType <= (int)RESOURCE_TYPE.PC_MAX)
-            {
-                string str = System.IO.File.ReadAllText(Application.dataPath + "/Table/" + resName, System.Text.Encoding.Default);
-                return str;
-            }
-            return null;
-        }
+//        /// <summary>
+//        /// 读取资源
+//        /// </summary>
+//        /// <param name="path"></param>
+//        /// <param name="resName"></param>
+//        /// <returns></returns>
+//        public static object Load(string path, string resName)
+//        {
+//			return Load(path,RESOURCE_TYPE.WEB_OBJECT, resName);
+//        }
+//
+//        /// <summary>
+//        /// 获取资源
+//        /// </summary> 
+//        /// <param name="path"></param>
+//        /// <returns></returns>
+//        public static object Load(string path, RESOURCE_TYPE resType, string resName)
+//        {
+//            if ((int)resType >= (int)RESOURCE_TYPE.WEB_RESOURCES && (int)resType <= (int)RESOURCE_TYPE.WEB_MAX )
+//            {
+//				if (s_cInstance.m_mapRes.ContainsKey(path))
+//                {
+//					s_cInstance.m_mapRes[path].Used();
+//                    if (resType == RESOURCE_TYPE.WEB_TEXT_STR)
+//                    {
+//						string obj = (string)s_cInstance.m_mapRes[path].GetAssetObject();
+//                        return obj;
+//                    }
+//                    else
+//                    {
+//						UnityEngine.Object res = ((AssetBundle)s_cInstance.m_mapRes[path].GetAssetObject()).Load(resName);
+//                        return res;
+//                    }
+//                }
+//                else
+//                {
+//                    Debug.LogError("Resource is null. path " + path + " resName " + resName);
+//                }
+//            }
+//            else if ((int)resType >= (int)RESOURCE_TYPE.LOC_RESOURCES && (int)resType <= (int)RESOURCE_TYPE.LOC_MAX)
+//            {
+//				UnityEngine.Object obj = LoadEditor(resName);
+//				return obj;
+//            }
+//            else if ((int)resType >= (int)RESOURCE_TYPE.PC_RESOURCES && (int)resType <= (int)RESOURCE_TYPE.PC_MAX)
+//            {
+//                string str = System.IO.File.ReadAllText(Application.dataPath + "/Table/" + resName, System.Text.Encoding.Default);
+//                return str;
+//            }
+//            return null;
+//        }
 
         /// <summary>
         /// 卸载资源
@@ -446,7 +469,7 @@ namespace Game.Resource
             }
 			s_cInstance.m_lstRequires.Clear();
 			s_cInstance.m_mapAsyncLoader.Clear();
-            //Resources.UnloadUnusedAssets();
+            Resources.UnloadUnusedAssets();
             //GC.Collect();
         }
 
@@ -455,7 +478,7 @@ namespace Game.Resource
         /// </summary>
         /// <param name="path"></param>
         /// <param name="name"></param>
-        public static ResourceRequireOwner LoadResource(string path, string name)
+        public static ResourceRequireOwner RequestResource(string path, string name)
         {
             return LoadResouce(path + name + RESOURCE_POST, 0, -1, name , null  , RESOURCE_TYPE.WEB_OBJECT, ENCRYPT_TYPE.NORMAL, null);
         }
@@ -465,7 +488,7 @@ namespace Game.Resource
         /// </summary>
         /// <param name="path"></param>
         /// <param name="name"></param>
-        public static ResourceRequireOwner LoadResource(string path , int version , string name)
+        public static ResourceRequireOwner RequestResource(string path , int version , string name)
         {
             return LoadResouce(path + name + RESOURCE_POST, 0, version, name , null , RESOURCE_TYPE.WEB_OBJECT, ENCRYPT_TYPE.NORMAL, null);
         }
