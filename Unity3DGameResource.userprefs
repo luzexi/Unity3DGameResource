@@ -1,13 +1,18 @@
 ﻿<Properties>
   <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" PreferredExecutionTarget="MonoDevelop.Default" />
-  <MonoDevelop.Ide.Workbench ActiveDocument="Unity3DGameResource/MyClass.cs">
+  <MonoDevelop.Ide.Workbench ActiveDocument="Unity3DGameResource/ResourcesManager.cs">
     <Files>
-      <File FileName="Unity3DGameResource/MyClass.cs" Line="1" Column="1" />
+      <File FileName="Unity3DGameResource/ResourcesManager.cs" Line="482" Column="10" />
+      <File FileName="Unity3DGameResource/ResourceRequireData.cs" Line="18" Column="2" />
+      <File FileName="Unity3DGameResource/AsyncLoader.cs" Line="14" Column="1" />
     </Files>
     <Pads>
       <Pad Id="ProjectPad">
         <State expanded="True">
-          <Node name="Unity3DGameResource" expanded="True" selected="True" />
+          <Node name="Unity3DGameResource" expanded="True">
+            <Node name="References" expanded="True" />
+            <Node name="ResourcesManager.cs" selected="True" />
+          </Node>
         </State>
       </Pad>
       <Pad Id="ClassPad">
