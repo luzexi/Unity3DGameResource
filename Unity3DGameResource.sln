@@ -1,0 +1,20 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 11.00
+# Visual Studio 2010
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Unity3DGameResource", "Unity3DGameResource\Unity3DGameResource.csproj", "{D3B2C1BC-5EC7-4852-B9B7-D45018BEC8BF}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{D3B2C1BC-5EC7-4852-B9B7-D45018BEC8BF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D3B2C1BC-5EC7-4852-B9B7-D45018BEC8BF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D3B2C1BC-5EC7-4852-B9B7-D45018BEC8BF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D3B2C1BC-5EC7-4852-B9B7-D45018BEC8BF}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(MonoDevelopProperties) = preSolution
+		StartupItem = Unity3DGameResource\Unity3DGameResource.csproj
+	EndGlobalSection
+EndGlobal
