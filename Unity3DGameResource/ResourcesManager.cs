@@ -4,6 +4,8 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+using REQUEST_FINISH_CALLBACK = System.Action<string , object , object[]>;
+using REQUEST_ERROR_CALLBACK = System.Action<string>;
 
 //  ResourceManager.cs
 //  Lu Zexi
@@ -11,34 +13,17 @@ using UnityEngine;
 
 namespace Game.Resource
 {
-    public delegate void DownLoadCallBack( string resName , object asset , object[] arg ); //下载回调
     public delegate byte[] DecryptBytesFunc(byte[] datas);  //解密接口
-    public delegate void CALLBACK(UnityEngine.Object asset);
 
     /// <summary>
     /// 资源类型
     /// </summary>
     public enum RESOURCE_TYPE
     { 
-        WEB_RESOURCES = 0,  //网络资源
         WEB_TEXTURE,    //网络贴图资源
-        WEB_OBJECT,     //网络物体资源
+        WEB_ASSETBUNLDE,     //网络AssetBundle物体资源
         WEB_TEXT_STR,   //网络文本文件资源
         WEB_TEXT_BYTES, //网络2进制文件资源
-        WEB_MAX,        //网络资源定义结束
-        PC_RESOURCES,   //软件资源
-        PC_TEXTURE,     //软件贴图资源
-        PC_OBJECT,      //软件物体资源
-        PC_TEXT_STR,    //软件文本文件资源
-        PC_TEXT_BYTES,  //软件2进制文件资源
-        PC_MAX,         //软件资源定义结束
-        LOC_RESOURCES,  //本地资源
-        LOC_TEXTURE,    //本地贴图资源
-        LOC_OBJECT,     //本地物体资源
-        LOC_TEXT_STR,   //本地文本文件资源
-        LOC_TEXT_BYTES, //本地2进制文件资源
-        LOC_MAX,        //本地资源定义结束
-        MAX,
     }
 
     /// <summary>
@@ -56,9 +41,10 @@ namespace Game.Resource
     public class ResourceRequireOwner
     {
         public string m_cResName;               //资源名
-        public string m_strResValue;    //资源值
+        //public string m_strResValue;    //资源值
         public RESOURCE_TYPE m_eResType;        //资源类型
-        public DownLoadCallBack m_delCallBack;  //回调方法
+		public REQUEST_FINISH_CALLBACK m_delCallBack;  //回调方法
+		public REQUEST_ERROR_CALLBACK m_delErrorCall;	//error callback
         public object[] m_vecArg;   //参数
     }
 
@@ -88,8 +74,6 @@ namespace Game.Resource
 
 		//The Share of resources is can't be unload
 		private List<string> m_lstShareResources = new List<string> ();	//The share resources.
-		private string[] m_lstLocalResourceFolder;	//Local Folder
-		private string[] m_lstLocalResourceType;	//Local resource type
 
         //异步加载
 		private Dictionary<string, object> m_mapAsyncLoader = new Dictionary<string, object>();    //异步映射
@@ -108,19 +92,8 @@ namespace Game.Resource
 
         public ResourcesManager()
         {
-			m_lstLocalResourceFolder = new string[]{"Asset/Resources"};
-			m_lstLocalResourceType = new string[]{".prefab" , ".png",".txt"};
             m_delDecryptFunc = CEncrypt.DecryptBytes;
         }
-
-		/// <summary>
-		/// Init the resource fload path.
-		/// </summary>
-		/// <param name="arg">Argument.</param>
-		public static void InitResourceFolder( params string[] arg )
-		{
-			s_cInstance.m_lstLocalResourceFolder = arg;
-		}
 
 		/// <summary>
 		/// Switchs the web resources load
@@ -260,21 +233,12 @@ namespace Game.Resource
 		/// Load editor resources
 		/// </summary>
 		/// <returns>The loacl.</returns>
-		private static UnityEngine.Object LoadEditor( string resName )
+		private static UnityEngine.Object LoadEditor( string path )
 		{
-			for (int i = 0; i<s_cInstance.m_lstLocalResourceFolder.Length; i++)
+			UnityEngine.Object obj = Resources.LoadAssetAtPath( Application.dataPath + path , typeof(UnityEngine.Object));
+			if(obj != null )
 			{
-				string folder = s_cInstance.m_lstLocalResourceFolder[i];
-				for( int j = 0 ; j<s_cInstance.m_lstLocalResourceType.Length ; j++ )
-				{
-					string pre = s_cInstance.m_lstLocalResourceType[i];
-					//UnityEngine.Object obj = UnityEditor.AssetDatabase.LoadAssetAtPath( folder + resName + pre, typeof(UnityEngine.Object));
-					UnityEngine.Object obj = Resources.LoadAssetAtPath( folder + resName + pre, typeof(UnityEngine.Object));
-					if(obj != null )
-					{
-						return obj;
-					}
-				}
+				return obj;
 			}
 			
 			return null;
@@ -327,6 +291,7 @@ namespace Game.Resource
 				{
 					return (s_cInstance.m_mapRes[path].GetAssetObject() as AssetBundle).Load(name);
 				}
+				Debug.LogError("Resource is not assetbundle. path " + path);
 			}
 			else
 			{
@@ -334,58 +299,6 @@ namespace Game.Resource
 			}
 			return null;
 		}
-
-//        /// <summary>
-//        /// 读取资源
-//        /// </summary>
-//        /// <param name="path"></param>
-//        /// <param name="resName"></param>
-//        /// <returns></returns>
-//        public static object Load(string path, string resName)
-//        {
-//			return Load(path,RESOURCE_TYPE.WEB_OBJECT, resName);
-//        }
-//
-//        /// <summary>
-//        /// 获取资源
-//        /// </summary> 
-//        /// <param name="path"></param>
-//        /// <returns></returns>
-//        public static object Load(string path, RESOURCE_TYPE resType, string resName)
-//        {
-//            if ((int)resType >= (int)RESOURCE_TYPE.WEB_RESOURCES && (int)resType <= (int)RESOURCE_TYPE.WEB_MAX )
-//            {
-//				if (s_cInstance.m_mapRes.ContainsKey(path))
-//                {
-//					s_cInstance.m_mapRes[path].Used();
-//                    if (resType == RESOURCE_TYPE.WEB_TEXT_STR)
-//                    {
-//						string obj = (string)s_cInstance.m_mapRes[path].GetAssetObject();
-//                        return obj;
-//                    }
-//                    else
-//                    {
-//						UnityEngine.Object res = ((AssetBundle)s_cInstance.m_mapRes[path].GetAssetObject()).Load(resName);
-//                        return res;
-//                    }
-//                }
-//                else
-//                {
-//                    Debug.LogError("Resource is null. path " + path + " resName " + resName);
-//                }
-//            }
-//            else if ((int)resType >= (int)RESOURCE_TYPE.LOC_RESOURCES && (int)resType <= (int)RESOURCE_TYPE.LOC_MAX)
-//            {
-//				UnityEngine.Object obj = LoadEditor(resName);
-//				return obj;
-//            }
-//            else if ((int)resType >= (int)RESOURCE_TYPE.PC_RESOURCES && (int)resType <= (int)RESOURCE_TYPE.PC_MAX)
-//            {
-//                string str = System.IO.File.ReadAllText(Application.dataPath + "/Table/" + resName, System.Text.Encoding.Default);
-//                return str;
-//            }
-//            return null;
-//        }
 
         /// <summary>
         /// 卸载资源
@@ -473,32 +386,61 @@ namespace Game.Resource
             //GC.Collect();
         }
 
-        /// <summary>
-        /// 装载资源
-        /// </summary>
-        /// <param name="path"></param>
-        /// <param name="name"></param>
-        public static ResourceRequireOwner RequestResource(string path, string name)
-        {
-            return LoadResouce(path + name + RESOURCE_POST, 0, -1, name , null  , RESOURCE_TYPE.WEB_OBJECT, ENCRYPT_TYPE.NORMAL, null);
-        }
+		/// <summary>
+		/// Requests the texture.
+		/// </summary>
+		/// <returns>The texture.</returns>
+		/// <param name="path">Path.</param>
+		/// <param name="arg">Argument.</param>
+		public static ResourceRequireOwner RequestTexture( string path , params object[] arg )
+		{
+			return RequestResouce(path , 0 , 0 , true , RESOURCE_TYPE.WEB_TEXTURE , ENCRYPT_TYPE.NORMAL , null,null , arg);
+		}
 
-        /// <summary>
-        /// 装载资源
-        /// </summary>
-        /// <param name="path"></param>
-        /// <param name="name"></param>
-        public static ResourceRequireOwner RequestResource(string path , int version , string name)
-        {
-            return LoadResouce(path + name + RESOURCE_POST, 0, version, name , null , RESOURCE_TYPE.WEB_OBJECT, ENCRYPT_TYPE.NORMAL, null);
-        }
+		/// <summary>
+		/// Requests the texture.
+		/// </summary>
+		/// <returns>The texture.</returns>
+		/// <param name="path">Path.</param>
+		/// <param name="CALLBACK">CALLBAC.</param>
+		/// <param name="arg">Argument.</param>
+		public static ResourceRequireOwner RequestTexture( string path , REQUEST_FINISH_CALLBACK CALLBACK , REQUEST_ERROR_CALLBACK error_callback,  params object[] arg )
+		{
+			return RequestResouce(path , 0 , 0 , true , RESOURCE_TYPE.WEB_TEXTURE , ENCRYPT_TYPE.NORMAL , CALLBACK ,error_callback, arg);
+		}
+
+		/// <summary>
+		/// Requests the asset bundle.
+		/// </summary>
+		/// <returns>The asset bundle.</returns>
+		/// <param name="path">Path.</param>
+		/// <param name="arg">Argument.</param>
+		public static ResourceRequireOwner RequestAssetBundle( string path , params object[] arg )
+		{
+			return RequestResouce(path , 0 , 0 , true , RESOURCE_TYPE.WEB_ASSETBUNLDE , ENCRYPT_TYPE.NORMAL , null,null , arg);
+		}
+
+		/// <summary>
+		/// Requests the asset bundle.
+		/// </summary>
+		/// <returns>The asset bundle.</returns>
+		/// <param name="path">Path.</param>
+		/// <param name="CALLBACK">CALLBAC.</param>
+		/// <param name="arg">Argument.</param>
+		public static ResourceRequireOwner RequestAssetBundle( string path , REQUEST_FINISH_CALLBACK CALLBACK ,REQUEST_ERROR_CALLBACK error_callback, params object[] arg )
+		{
+			return RequestResouce(path , 0 , 0 , true , RESOURCE_TYPE.WEB_ASSETBUNLDE , ENCRYPT_TYPE.NORMAL , CALLBACK ,error_callback, arg);
+		}
 
         /// <summary>
         /// 装载资源
         /// </summary>
         /// <param name="path"></param>
         /// <returns></returns>
-		public static ResourceRequireOwner LoadResouce(string path, uint crc, int version, string resName , string resValue , RESOURCE_TYPE resType, ENCRYPT_TYPE encrypt_type, DownLoadCallBack func, params object[] arg)
+		public static ResourceRequireOwner RequestResouce(
+			string path, uint crc, int version , bool autoSave , RESOURCE_TYPE resType,
+			ENCRYPT_TYPE encrypt_type, REQUEST_FINISH_CALLBACK func , REQUEST_ERROR_CALLBACK error_call,object[] arg
+			)
         {
 			if (s_cInstance.m_delDecryptFunc == null && encrypt_type == ENCRYPT_TYPE.ENCRYPT )
             {
@@ -507,31 +449,46 @@ namespace Game.Resource
                 return null;
             }
 
+			string resName = (new Uri(path)).AbsolutePath;
+
             ResourceRequireOwner owner = new ResourceRequireOwner();
             owner.m_cResName = resName;
-            owner.m_strResValue = resValue;
+//            owner.m_strResValue = resValue;
             owner.m_delCallBack = func;
+			owner.m_delErrorCall = error_call;
             owner.m_eResType = resType;
             owner.m_vecArg = arg;
 
-#if UNITY_EDITOR
-			if ( ResourcesManager.m_eLoadType != RESOURCE_TYPE.WEB_OBJECT)
-			{
-				UnityEngine.Object obj = LoadLocal(resName);
-				if (!m_mapRes.ContainsKey(resName))
+			if ( sInstance.m_eLoadType != LOAD_TYPE.NORMAL )
+			{ 
+				UnityEngine.Object obj = LoadEditor(resName);
+				if (!sInstance.m_mapRes.ContainsKey(resName))
 				{
-					ResourceRequireData data = new ResourceRequireData(obj);
-					m_mapRes.Add(resName, data);
+					object resData = null;
+					switch( resType )
+					{
+					case RESOURCE_TYPE.WEB_ASSETBUNLDE:
+					case RESOURCE_TYPE.WEB_TEXTURE:
+						resData = obj;
+						break;
+					case RESOURCE_TYPE.WEB_TEXT_BYTES:
+						resData = (obj as TextAsset).bytes;
+						break;
+					case RESOURCE_TYPE.WEB_TEXT_STR:
+						resData = (obj as TextAsset).text;
+						break;
+					}
+					ResourceRequireData data = new ResourceRequireData(resData);
+					sInstance.m_mapRes.Add(resName, data);
 				}
-				m_mapRes[resName].AddRequireOwner(owner);
-				m_mapRes[resName].Used();
-				if(m_mapRes[resName].Complete)
+				sInstance.m_mapRes[resName].AddRequireOwner(owner);
+				sInstance.m_mapRes[resName].Used();
+				if(sInstance.m_mapRes[resName].Complete)
 				{
-					m_mapRes[resName].CompleteCallBack();
+					sInstance.m_mapRes[resName].CompleteCallBack();
 				}
 				return owner;
 			}
-#endif
 
 			if (s_cInstance.m_mapRes.ContainsKey(resName))
             {
@@ -545,7 +502,7 @@ namespace Game.Resource
             }
             else
             {
-				ResourceRequireData rrd = new ResourceRequireData(path , crc , version, resType, encrypt_type, s_cInstance.m_delDecryptFunc);
+				ResourceRequireData rrd = new ResourceRequireData(path , crc , version , autoSave , resType, encrypt_type, s_cInstance.m_delDecryptFunc);
 				s_cInstance.m_lstRequires.Add(rrd);
 				s_cInstance.m_mapRes.Add(resName, rrd);
                 rrd.AddRequireOwner(owner);

@@ -1,7 +1,10 @@
 ﻿
-
+using System;
 using System.Collections;
 using UnityEngine;
+
+using DOWN_FINISH_CALLBACK = System.Action<string , object>;
+using DOWN_ERROR_CALLBACK = System.Action<string>;
 
 //  LoadPackage.cs
 //  Lu Zexi
@@ -24,21 +27,22 @@ namespace Game.Resource
         }
 
         private WWW m_cWww;     //WWW
+		private float m_fProgess;	//the progess of the www.
         public float Progess
         {
             get
             {
-                if (this.m_cWww != null)
-                    return this.m_cWww.progress;
-                return 1f;
+				return this.m_fProgess;
             }
         }
-        public delegate void Func(string str, object asset);
-        private Func m_cCallBack;   //回调方法
+        //public delegate void Func(string str, object asset);
+		private DOWN_FINISH_CALLBACK m_cCallBack;   //回调方法
+		private DOWN_ERROR_CALLBACK m_cErrorCallBack;	//error callback.
         private DecryptBytesFunc m_delDecryptFunc;  //解密接口
         private ENCRYPT_TYPE m_eEncryptType;    //加密类型
         private RESOURCE_TYPE m_eResType;   //资源类型
         private int m_iVersion; //版本
+		private bool m_bAutoSave;	//auto save function.
 
         /// <summary>
         /// 开始WW加载
@@ -49,12 +53,18 @@ namespace Game.Resource
         /// <param name="callback"></param>
         /// <param name="res_type"></param>
         /// <param name="encrypt_type"></param>
-        /// <param name="decryptFunc"></param>
-        public static LoadPackage StartWWW(string path, uint crc, int version, Func callback, RESOURCE_TYPE res_type, ENCRYPT_TYPE encrypt_type, DecryptBytesFunc decryptFunc)
+        /// <param name="decryptFunc"></param> 
+		public static LoadPackage StartWWW(
+			string path, uint crc, int version , bool autosave , DOWN_FINISH_CALLBACK callback,
+			DOWN_ERROR_CALLBACK error_call,
+			RESOURCE_TYPE res_type, ENCRYPT_TYPE encrypt_type, DecryptBytesFunc decryptFunc
+			)
         {
             GameObject obj = new GameObject("WWWLoad");
             LoadPackage loader = obj.AddComponent<LoadPackage>();
-            loader.Init(path, crc, version, callback, res_type, encrypt_type, decryptFunc);
+            loader.Init(
+				path, crc, version , autosave , callback,error_call,
+				res_type, encrypt_type, decryptFunc);
             loader.StartCoroutine("Load");
             return loader;
         }
@@ -63,7 +73,11 @@ namespace Game.Resource
         /// 初始化
         /// </summary>
         /// <param name="id"></param>
-        public void Init(string path, uint crc, int version, Func callback, RESOURCE_TYPE res_type, ENCRYPT_TYPE encrypt_type, DecryptBytesFunc decryptFunc)
+		public void Init(
+			string path, uint crc, int version , bool autosave , DOWN_FINISH_CALLBACK callback,
+			DOWN_ERROR_CALLBACK error_call,
+			RESOURCE_TYPE res_type, ENCRYPT_TYPE encrypt_type, DecryptBytesFunc decryptFunc
+			)
         {
             this.m_strPath = path;
             this.m_iCRC = crc;
@@ -74,15 +88,8 @@ namespace Game.Resource
             this.m_eEncryptType = encrypt_type;
             this.m_eResType = res_type;
             this.m_iVersion = version;
+			this.m_fProgess = 0;
         }
-
-        ///// <summary>
-        ///// 开始加载
-        ///// </summary>
-        //public void BeginLoad()
-        //{
-        //    StartCoroutine(Load());
-        //}
 
         /// <summary>
         /// 销毁
@@ -92,104 +99,94 @@ namespace Game.Resource
             this.m_cWww = null;
         }
 
-
         /// <summary>
         /// 加载
         /// </summary>
         /// <returns></returns>
         public IEnumerator Load()
         {
-            StartLoad:
-
+		StartLoad:
             string path = "";
             path += this.m_strPath;
             //Debug.Log("version " + this.m_iVersion);
             //Debug.Log("path " + this.m_strPath);
-            if (this.m_iVersion >= 0)
+            if (this.m_iVersion >= 0 && !this.m_bAutoSave)
+			{
                 this.m_cWww = WWW.LoadFromCacheOrDownload(path, this.m_iVersion, this.m_iCRC);
+			}
             else
             {
                 this.m_cWww = new WWW(path);
             }
 
-            yield return this.m_cWww;
+			for( ;!this.m_cWww.isDone; )
+			{
+				this.m_fProgess = this.m_cWww.progress;
+				yield return new WaitForSeconds(0);
+			}
+
+            //yield return this.m_cWww;
 
             //Debug.Log("www " + this.m_cWww.isDone  + " path " + this.m_strPath);
 
-            if (this.m_cWww.error != null && this.m_iVersion >= 0 && !this.m_cWww.error.Contains("404") )
+            if (this.m_cWww.error != null)
             {
-                Debug.Log(m_cWww.error.ToString());
+                Debug.Log(m_cWww.error);
+				if(this.m_cErrorCallBack != null )
+				{
+					this.m_cErrorCallBack(this.m_cWww.error);
+				}
                 goto StartLoad;
             }
             else
             {
                 this.m_bComplete = true;
+				this.m_fProgess = 1;
 
-                if (this.m_eResType == RESOURCE_TYPE.WEB_TEXT_STR)
-                {
-                    if (this.m_cCallBack != null)
-                    {
-                        if (this.m_cWww.error == null)
-                            this.m_cCallBack(this.m_strPath, this.m_cWww.text);
-                        else
-                            this.m_cCallBack(this.m_strPath, null);
-                    }
-                }
-                else
-                {
-                    if (this.m_cCallBack != null )
-                    {
-                        if (this.m_cWww.error == null)
-                            this.m_cCallBack(this.m_strPath, this.m_cWww.assetBundle);
-                        else
-                            this.m_cCallBack(this.m_strPath, null);
-                    }
-
-                    //string fileName = GetFileName(path);
-                    //TextAsset ta = (TextAsset)this.m_cWww.assetBundle.Load(fileName);
-                    //if (ta != null)
-                    //{
-                    //    byte[] datas = ta.bytes;
-
-                    //    //解密
-                    //    if( this.m_eEncryptType == ENCRYPT_TYPE.ENCRYPT)
-                    //        datas = this.m_delDecryptFunc(datas);
-
-                    //    AssetBundleCreateRequest abcr = AssetBundle.CreateFromMemory(datas);
-
-                    //    yield return abcr;
-
-                    //    if (this.m_cCallBack != null && abcr.isDone)
-                    //    {
-                    //        this.m_cCallBack(this.m_strPath, abcr.assetBundle);
-                    //    }
-                    //}
-                }
+				if(!this.m_bAutoSave)
+				{
+					switch(this.m_eResType)
+					{
+					case RESOURCE_TYPE.WEB_ASSETBUNLDE:
+						this.m_cCallBack(this.m_strPath , this.m_cWww.assetBundle);
+						break;
+					case RESOURCE_TYPE.WEB_TEXTURE:
+						this.m_cCallBack(this.m_strPath , this.m_cWww.texture);
+						break;
+					case RESOURCE_TYPE.WEB_TEXT_BYTES:
+						this.m_cCallBack(this.m_strPath , this.m_cWww.bytes);
+						break;
+					case RESOURCE_TYPE.WEB_TEXT_STR:
+						this.m_cCallBack(this.m_strPath , this.m_cWww.text);
+						break;
+					}
+				}
+				else
+				{
+					Uri tmpUri = new Uri(this.m_strPath);
+					string dataPath = Application.persistentDataPath + "/" + tmpUri.AbsolutePath;
+					switch(this.m_eResType)
+					{
+					case RESOURCE_TYPE.WEB_ASSETBUNLDE:
+						this.m_cCallBack(this.m_strPath , this.m_cWww.assetBundle);
+						break;
+					case RESOURCE_TYPE.WEB_TEXTURE:
+						this.m_cCallBack(this.m_strPath , this.m_cWww.texture);
+						break;
+					case RESOURCE_TYPE.WEB_TEXT_BYTES:
+						this.m_cCallBack(this.m_strPath , this.m_cWww.bytes);
+						break;
+					case RESOURCE_TYPE.WEB_TEXT_STR:
+						this.m_cCallBack(this.m_strPath , this.m_cWww.text);
+						break;
+					}
+					if(!tmpUri.IsFile)
+						CFile.WriteAllBytes(dataPath , this.m_cWww.bytes);
+				}
             }
-        }
 
-        /// <summary>
-        /// 从路径中获取文件名
-        /// </summary>
-        /// <param name="path"></param>
-        /// <returns></returns>
-        private string GetFileName(string path)
-        {
-            string[] strs = path.Split('.');
-            string file = strs[strs.Length - 2];
-            int i;
-            for (i = file.Length - 1; i >= 0; i--)
-            {
-                if (file[i] == '/' || file[i] == '\\')
-                {
-                    break;
-                }
-            }
-            if (i >= 0)
-            {
-                return file.Substring(i + 1, file.Length - (i + 1));
-            }
-            return null;
+			this.m_cWww.Dispose();
+			this.m_cWww = null;
         }
 
     }

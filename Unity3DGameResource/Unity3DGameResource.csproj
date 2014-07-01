@@ -44,6 +44,7 @@
     <Compile Include="ResourceRequireData.cs" />
     <Compile Include="ResourcesManager.cs" />
     <Compile Include="ResourcesTool.cs" />
+    <Compile Include="CFile.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
 </Project>

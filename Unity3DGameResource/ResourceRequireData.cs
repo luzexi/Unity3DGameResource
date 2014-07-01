@@ -20,8 +20,9 @@ namespace Game.Resource
 		private string m_strFilePath;       //资源地址
 		private uint m_iCRC; //CRC码
 		private int m_iVersion; //资源版本
+		private bool m_bAutoSave;	//auto save of the resources.
 		private float m_fLastUseTime;   //最近使用时间
-		private RESOURCE_TYPE m_eResType = RESOURCE_TYPE.MAX;   //资源类型
+		private RESOURCE_TYPE m_eResType;   //资源类型
 		private ENCRYPT_TYPE m_eEncryType = ENCRYPT_TYPE.NORMAL;   //加密类型
 		private List<ResourceRequireOwner> m_lstOwners = new List<ResourceRequireOwner>();    //需求者
 		
@@ -44,7 +45,7 @@ namespace Game.Resource
 			this.m_fLastUseTime = Time.fixedTime;
 		}
 		
-		public ResourceRequireData(string path, uint crc, int version, RESOURCE_TYPE type, ENCRYPT_TYPE encrypt_type, DecryptBytesFunc decryptFunc)
+		public ResourceRequireData(string path, uint crc, int version , bool autosave , RESOURCE_TYPE type, ENCRYPT_TYPE encrypt_type, DecryptBytesFunc decryptFunc)
 		{
 			this.m_strFilePath = path;
 			this.m_iCRC = crc;
@@ -53,6 +54,7 @@ namespace Game.Resource
 			this.m_eEncryType = encrypt_type;
 			this.m_funDecryptFunc = decryptFunc;
 			this.m_fLastUseTime = Time.fixedTime;
+			this.m_bAutoSave = autosave;
 		}
 		
 		/// <summary>
@@ -78,28 +80,10 @@ namespace Game.Resource
 		public void Initialize()
 		{
 			this.m_bStart = true;
-			
-			if (((int)this.m_eResType) >= ((int)RESOURCE_TYPE.WEB_RESOURCES) && ((int)this.m_eResType) <= ((int)RESOURCE_TYPE.WEB_MAX))
-			{
-				//GameObject gameObject = new GameObject("Loader");
-				this.m_cLoader = LoadPackage.StartWWW(this.m_strFilePath, this.m_iCRC, this.m_iVersion, LoaderCallBack, this.m_eResType, this.m_eEncryType, this.m_funDecryptFunc);
-				//this.m_cLoader.Init(this.m_strFilePath, this.m_iCRC, this.m_iVersion, LoaderCallBack, this.m_eResType, this.m_eEncryType, this.m_funDecryptFunc);
-				//this.m_cLoader.BeginLoad();
-				return;
-			}
-			
-			if (((int)this.m_eResType) >= ((int)RESOURCE_TYPE.PC_RESOURCES) && ((int)this.m_eResType) <= ((int)RESOURCE_TYPE.PC_MAX))
-			{
-				LoaderCallBack(this.m_strFilePath, Resources.Load(this.m_strFilePath));
-				return;
-			}
-			
-			if (((int)this.m_eResType) >= ((int)RESOURCE_TYPE.LOC_RESOURCES) && ((int)this.m_eResType) <= ((int)RESOURCE_TYPE.LOC_MAX))
-			{
-				AssetBundle asset = AssetBundle.CreateFromFile(this.m_strFilePath);
-				LoaderCallBack(this.m_strFilePath, asset);
-				return;
-			}
+
+			this.m_cLoader = LoadPackage.StartWWW(
+				this.m_strFilePath, this.m_iCRC, this.m_iVersion , this.m_bAutoSave, LoaderCallBack,
+				ErrorCallBack , this.m_eResType, this.m_eEncryType, this.m_funDecryptFunc);
 		}
 		
 		/// <summary>
@@ -130,7 +114,22 @@ namespace Game.Resource
 				GameObject.Destroy(this.m_cLoader.gameObject);
 			this.m_cLoader = null;
 		}
-		
+
+		/// <summary>
+		/// error of the loader callback
+		/// </summary>
+		/// <param name="str">String.</param>
+		private void ErrorCallBack(string str )
+		{
+			foreach (ResourceRequireOwner item in this.m_lstOwners)
+			{
+				if (item.m_delErrorCall != null)
+				{
+					item.m_delErrorCall(str);
+				}
+			}
+		}
+
 		/// <summary>
 		/// 是否完成加载
 		/// </summary>
@@ -153,28 +152,9 @@ namespace Game.Resource
 			this.m_lstOwners.Clear();
 			foreach (ResourceRequireOwner item in lst)
 			{
-				if (this.m_cAsset is AssetBundle)
+				if (item.m_delCallBack != null)
 				{
-					UnityEngine.Object obj = null;
-					if (string.IsNullOrEmpty(item.m_strResValue))
-					{
-						obj = ((AssetBundle)this.m_cAsset).mainAsset;
-					}
-					else
-					{
-						obj = ((AssetBundle)this.m_cAsset).Load(item.m_strResValue);
-					}
-					if (item.m_delCallBack != null)
-					{
-						item.m_delCallBack(item.m_cResName, obj, item.m_vecArg);
-					}
-				}
-				else
-				{
-					if (item.m_delCallBack != null)
-					{
-						item.m_delCallBack(item.m_cResName, this.m_cAsset, item.m_vecArg);
-					}
+					item.m_delCallBack(item.m_cResName, this.m_cAsset, item.m_vecArg);
 				}
 			}
 		}
