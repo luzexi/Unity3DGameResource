@@ -143,7 +143,7 @@ namespace Game.Resource
                 this.m_bComplete = true;
 				this.m_fProgess = 1;
 
-				if(!this.m_bAutoSave)
+				if(this.m_cCallBack != null )
 				{
 					switch(this.m_eResType)
 					{
@@ -161,25 +161,10 @@ namespace Game.Resource
 						break;
 					}
 				}
-				else
+				if(this.m_bAutoSave)
 				{
 					Uri tmpUri = new Uri(this.m_strPath);
 					string dataPath = Application.persistentDataPath + "/" + tmpUri.AbsolutePath;
-					switch(this.m_eResType)
-					{
-					case RESOURCE_TYPE.WEB_ASSETBUNLDE:
-						this.m_cCallBack(this.m_strPath , this.m_cWww.assetBundle);
-						break;
-					case RESOURCE_TYPE.WEB_TEXTURE:
-						this.m_cCallBack(this.m_strPath , this.m_cWww.texture);
-						break;
-					case RESOURCE_TYPE.WEB_TEXT_BYTES:
-						this.m_cCallBack(this.m_strPath , this.m_cWww.bytes);
-						break;
-					case RESOURCE_TYPE.WEB_TEXT_STR:
-						this.m_cCallBack(this.m_strPath , this.m_cWww.text);
-						break;
-					}
 					if(!tmpUri.IsFile)
 						CFile.WriteAllBytes(dataPath , this.m_cWww.bytes);
 				}

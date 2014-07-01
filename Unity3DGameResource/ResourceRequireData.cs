@@ -165,13 +165,6 @@ namespace Game.Resource
 		/// <param name="owner"></param>
 		public bool AddRequireOwner(ResourceRequireOwner owner)
 		{
-			//foreach (ResourceRequireOwner item in this.m_lstOwners)
-			//{
-			//    if (owner.m_cResName.CompareTo(item.m_cResName) == 0)
-			//    {
-			//        return false;
-			//    }
-			//}
 			this.m_lstOwners.Add(owner);
 			return true;
 		}
