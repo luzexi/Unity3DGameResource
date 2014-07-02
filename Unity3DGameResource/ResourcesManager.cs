@@ -65,7 +65,7 @@ namespace Game.Resource
         private const int LOAD_MAX_NUM = 3;		//Max load num
         private const string RESOURCE_POST = ".res";    //资源名后缀
 
-		private LOAD_TYPE m_eLoadType; //异步加载方式
+		private LOAD_TYPE m_eLoadType = LOAD_TYPE.NORMAL; //异步加载方式
 
 		//The www resource of the var
 		private Dictionary<string, ResourceRequireData> m_mapRes = new Dictionary<string, ResourceRequireData>();   //资源集合
@@ -100,7 +100,7 @@ namespace Game.Resource
 		/// </summary>
 		public static void SwitchNormal()
 		{
-			s_cInstance.m_eLoadType = LOAD_TYPE.NORMAL;
+			sInstance.m_eLoadType = LOAD_TYPE.NORMAL;
 		}
 
 		/// <summary>
@@ -108,7 +108,7 @@ namespace Game.Resource
 		/// </summary>
 		public static void SwitchEditor()
 		{
-			s_cInstance.m_eLoadType = LOAD_TYPE.EDITOR;
+			sInstance.m_eLoadType = LOAD_TYPE.EDITOR;
 		}
 
         /// <summary>
@@ -116,7 +116,7 @@ namespace Game.Resource
         /// </summary>
         public static void ClearAsyncLoad()
         {
-			s_cInstance.m_mapAsyncLoader.Clear();
+			sInstance.m_mapAsyncLoader.Clear();
         }
 
         /// <summary>
@@ -126,22 +126,22 @@ namespace Game.Resource
         public static float GetAsyncProcess()
         {
             float rate = 0;
-			if (s_cInstance.m_eLoadType == LOAD_TYPE.NORMAL)
+			if (sInstance.m_eLoadType == LOAD_TYPE.NORMAL)
             {
-				foreach (KeyValuePair<string, object> item in s_cInstance.m_mapAsyncLoader)
+				foreach (KeyValuePair<string, object> item in sInstance.m_mapAsyncLoader)
                 {
                     rate += ((AsyncLoader)item.Value).Progress();
                 }
             }
             else
             {
-				rate = s_cInstance.m_mapAsyncLoader.Count;
+				rate = sInstance.m_mapAsyncLoader.Count;
             }
 
-			if (s_cInstance.m_mapAsyncLoader.Count <= 0)
+			if (sInstance.m_mapAsyncLoader.Count <= 0)
                 return 1f;
 
-			rate /= s_cInstance.m_mapAsyncLoader.Count;
+			rate /= sInstance.m_mapAsyncLoader.Count;
 
             return rate;
         }
@@ -153,11 +153,11 @@ namespace Game.Resource
         /// <returns></returns>
         public static UnityEngine.Object GetAsyncObject(string resName)
         {
-			if ( s_cInstance.m_eLoadType == LOAD_TYPE.NORMAL)
+			if ( sInstance.m_eLoadType == LOAD_TYPE.NORMAL)
             {
-				if ( s_cInstance.m_mapAsyncLoader.ContainsKey(resName))
+				if ( sInstance.m_mapAsyncLoader.ContainsKey(resName))
                 {
-					return ((AsyncLoader)s_cInstance.m_mapAsyncLoader[resName]).GetAsset();
+					return ((AsyncLoader)sInstance.m_mapAsyncLoader[resName]).GetAsset();
                 }
                 else
                 {
@@ -166,9 +166,9 @@ namespace Game.Resource
             }
             else
             {
-				if (s_cInstance.m_mapAsyncLoader.ContainsKey(resName))
+				if (sInstance.m_mapAsyncLoader.ContainsKey(resName))
                 {
-					return (UnityEngine.Object)s_cInstance.m_mapAsyncLoader[resName];
+					return (UnityEngine.Object)sInstance.m_mapAsyncLoader[resName];
                 }
                 else
                 {
@@ -196,14 +196,14 @@ namespace Game.Resource
         /// <returns></returns>
         public static void LoadAsync(string path , string resName )
         {
-			if (  s_cInstance.m_eLoadType == LOAD_TYPE.NORMAL )
+			if (  sInstance.m_eLoadType == LOAD_TYPE.NORMAL )
             {
-				if ( s_cInstance.m_mapRes.ContainsKey(path) )
+				if ( sInstance.m_mapRes.ContainsKey(path) )
                 {
-					if (!s_cInstance.m_mapAsyncLoader.ContainsKey(resName))
+					if (!sInstance.m_mapAsyncLoader.ContainsKey(resName))
                     {
-						AsyncLoader loader = AsyncLoader.StartLoad(((AssetBundle)s_cInstance.m_mapRes[path].GetAssetObject()), resName);
-						s_cInstance.m_mapAsyncLoader.Add(resName, loader);
+						AsyncLoader loader = AsyncLoader.StartLoad(((AssetBundle)sInstance.m_mapRes[path].GetAssetObject()), resName);
+						sInstance.m_mapAsyncLoader.Add(resName, loader);
                     }
                     else
                     {
@@ -217,10 +217,10 @@ namespace Game.Resource
             }
             else
             {
-				if (!s_cInstance.m_mapAsyncLoader.ContainsKey(resName))
+				if (!sInstance.m_mapAsyncLoader.ContainsKey(resName))
                 {
 					UnityEngine.Object obj = ResourcesManager.LoadEditor(resName);
-					s_cInstance.m_mapAsyncLoader.Add(resName, obj);
+					sInstance.m_mapAsyncLoader.Add(resName, obj);
                 }
                 else
                 {
@@ -260,14 +260,14 @@ namespace Game.Resource
         /// <returns></returns>
         public static object LoadAsset(string path)
         {
-			if (s_cInstance.m_mapRes.ContainsKey(path))
+			if (sInstance.m_mapRes.ContainsKey(path))
             {
-				s_cInstance.m_mapRes[path].Used();
-				if (s_cInstance.m_mapRes[path].GetAssetObject() is AssetBundle)
+				sInstance.m_mapRes[path].Used();
+				if (sInstance.m_mapRes[path].GetAssetObject() is AssetBundle)
                 {
-					return (s_cInstance.m_mapRes[path].GetAssetObject() as AssetBundle).mainAsset;
+					return (sInstance.m_mapRes[path].GetAssetObject() as AssetBundle).mainAsset;
                 }
-				return s_cInstance.m_mapRes[path].GetAssetObject();
+				return sInstance.m_mapRes[path].GetAssetObject();
             }
             else
             {
@@ -284,12 +284,12 @@ namespace Game.Resource
 		/// <param name="name">Name.</param>
 		public static UnityEngine.Object LoadAsset( string path , string name )
 		{
-			if (s_cInstance.m_mapRes.ContainsKey(path))
+			if (sInstance.m_mapRes.ContainsKey(path))
 			{
-				s_cInstance.m_mapRes[path].Used();
-				if (s_cInstance.m_mapRes[path].GetAssetObject() is AssetBundle)
+				sInstance.m_mapRes[path].Used();
+				if (sInstance.m_mapRes[path].GetAssetObject() is AssetBundle)
 				{
-					return (s_cInstance.m_mapRes[path].GetAssetObject() as AssetBundle).Load(name);
+					return (sInstance.m_mapRes[path].GetAssetObject() as AssetBundle).Load(name);
 				}
 				Debug.LogError("Resource is not assetbundle. path " + path);
 			}
@@ -306,16 +306,19 @@ namespace Game.Resource
         /// <param name="name"></param>
         public static void UnloadResource(string name)
         {
-			if (s_cInstance.m_mapRes.ContainsKey(name))
+			if (sInstance.m_mapRes.ContainsKey(name))
             {
                 if (!CanUnload(name))
                     return;
-
-				s_cInstance.m_mapRes[name].Destory( false );
-				s_cInstance.m_lstRequires.Remove(s_cInstance.m_mapRes[name]);
-				s_cInstance.m_mapRes.Remove(name);
+				sInstance.m_mapRes[name].Destory( false );
+				sInstance.m_lstRequires.Remove(sInstance.m_mapRes[name]);
+				sInstance.m_mapRes.Remove(name);
                 Resources.UnloadUnusedAssets();
             }
+			else
+			{
+				Debug.Log("the resouce named " + name + " is not exist.");
+			}
         }
 
         /// <summary>
@@ -325,18 +328,18 @@ namespace Game.Resource
         /// <param name="owner"></param>
         public static void UnloadResource(string name, ResourceRequireOwner owner)
         {
-			if (s_cInstance.m_mapRes.ContainsKey(name))
+			if (sInstance.m_mapRes.ContainsKey(name))
             {
-				s_cInstance.m_mapRes[name].RemoveRequireOwner(owner);
+				sInstance.m_mapRes[name].RemoveRequireOwner(owner);
                 //倘若资源需求为空
-				if (s_cInstance.m_mapRes[name].IsOwnerEmpty())
+				if (sInstance.m_mapRes[name].IsOwnerEmpty())
                 {
                     //如果可以卸载 或者 加载未完成则卸载资源
-					if (CanUnload(name) || !s_cInstance.m_mapRes[name].Complete)
+					if (CanUnload(name) || !sInstance.m_mapRes[name].Complete)
                     {
-						s_cInstance.m_mapRes[name].Destory(false);
-						s_cInstance.m_lstRequires.Remove(s_cInstance.m_mapRes[name]);
-						s_cInstance.m_mapRes.Remove(name);
+						sInstance.m_mapRes[name].Destory(false);
+						sInstance.m_lstRequires.Remove(sInstance.m_mapRes[name]);
+						sInstance.m_mapRes.Remove(name);
                         Resources.UnloadUnusedAssets();
                     }
                 }
@@ -354,7 +357,7 @@ namespace Game.Resource
         /// <returns></returns>
         private static bool CanUnload(string name)
         {
-			foreach (string item in s_cInstance.m_lstShareResources)
+			foreach (string item in sInstance.m_lstShareResources)
 			{
 				if (name == item || name.StartsWith(item))
 					return false;
@@ -368,7 +371,7 @@ namespace Game.Resource
         public static void UnloadUnusedResources()
         {
             List<string> lst = new List<string>();
-			foreach (KeyValuePair<string, ResourceRequireData> item in s_cInstance.m_mapRes)
+			foreach (KeyValuePair<string, ResourceRequireData> item in sInstance.m_mapRes)
             {
                 if (!CanUnload(item.Key))
                     continue;
@@ -377,11 +380,11 @@ namespace Game.Resource
             }
             foreach (string key in lst)
             {
-				s_cInstance.m_mapRes[key].Destory( false );
-				s_cInstance.m_mapRes.Remove(key);
+				sInstance.m_mapRes[key].Destory( false );
+				sInstance.m_mapRes.Remove(key);
             }
-			s_cInstance.m_lstRequires.Clear();
-			s_cInstance.m_mapAsyncLoader.Clear();
+			sInstance.m_lstRequires.Clear();
+			sInstance.m_mapAsyncLoader.Clear();
             Resources.UnloadUnusedAssets();
             //GC.Collect();
         }
@@ -392,9 +395,11 @@ namespace Game.Resource
 		/// <returns>The texture.</returns>
 		/// <param name="path">Path.</param>
 		/// <param name="arg">Argument.</param>
-		public static ResourceRequireOwner RequestTexture( string path , params object[] arg )
+		public static ResourceRequireOwner RequestTexture( string path )
 		{
-			return RequestResouce(path , 0 , 0 , true , RESOURCE_TYPE.WEB_TEXTURE , ENCRYPT_TYPE.NORMAL , null,null , arg);
+			return RequestResouce(
+				path , 0 , 0 , true ,false, RESOURCE_TYPE.WEB_TEXTURE ,
+				ENCRYPT_TYPE.NORMAL , null,null ,null);
 		}
 
 		/// <summary>
@@ -404,9 +409,16 @@ namespace Game.Resource
 		/// <param name="path">Path.</param>
 		/// <param name="CALLBACK">CALLBAC.</param>
 		/// <param name="arg">Argument.</param>
-		public static ResourceRequireOwner RequestTexture( string path , REQUEST_FINISH_CALLBACK CALLBACK , REQUEST_ERROR_CALLBACK error_callback,  params object[] arg )
+		public static ResourceRequireOwner RequestTexture
+			(
+				string path , REQUEST_FINISH_CALLBACK CALLBACK ,
+				REQUEST_ERROR_CALLBACK error_callback,  params object[] arg
+			)
 		{
-			return RequestResouce(path , 0 , 0 , true , RESOURCE_TYPE.WEB_TEXTURE , ENCRYPT_TYPE.NORMAL , CALLBACK ,error_callback, arg);
+			return RequestResouce(
+				path,0,0,true,true,RESOURCE_TYPE.WEB_TEXTURE,
+				ENCRYPT_TYPE.NORMAL , CALLBACK ,error_callback, arg
+			);
 		}
 
 		/// <summary>
@@ -415,9 +427,11 @@ namespace Game.Resource
 		/// <returns>The asset bundle.</returns>
 		/// <param name="path">Path.</param>
 		/// <param name="arg">Argument.</param>
-		public static ResourceRequireOwner RequestAssetBundle( string path , params object[] arg )
+		public static ResourceRequireOwner RequestAssetBundle( string path )
 		{
-			return RequestResouce(path , 0 , 0 , true , RESOURCE_TYPE.WEB_ASSETBUNLDE , ENCRYPT_TYPE.NORMAL , null,null , arg);
+			return RequestResouce(
+				path , 0 , 0 , true , false , RESOURCE_TYPE.WEB_ASSETBUNLDE ,
+				ENCRYPT_TYPE.NORMAL , null,null , null);
 		}
 
 		/// <summary>
@@ -427,9 +441,15 @@ namespace Game.Resource
 		/// <param name="path">Path.</param>
 		/// <param name="CALLBACK">CALLBAC.</param>
 		/// <param name="arg">Argument.</param>
-		public static ResourceRequireOwner RequestAssetBundle( string path , REQUEST_FINISH_CALLBACK CALLBACK ,REQUEST_ERROR_CALLBACK error_callback, params object[] arg )
+		public static ResourceRequireOwner RequestAssetBundle
+			(
+				string path , REQUEST_FINISH_CALLBACK CALLBACK ,
+				REQUEST_ERROR_CALLBACK error_callback, params object[] arg
+			)
 		{
-			return RequestResouce(path , 0 , 0 , true , RESOURCE_TYPE.WEB_ASSETBUNLDE , ENCRYPT_TYPE.NORMAL , CALLBACK ,error_callback, arg);
+			return RequestResouce(
+				path , 0 , 0 , true , true , RESOURCE_TYPE.WEB_ASSETBUNLDE ,
+				ENCRYPT_TYPE.NORMAL , CALLBACK ,error_callback, arg);
 		}
 
         /// <summary>
@@ -438,11 +458,12 @@ namespace Game.Resource
         /// <param name="path"></param>
         /// <returns></returns>
 		public static ResourceRequireOwner RequestResouce(
-			string path, uint crc, int version , bool autoSave , RESOURCE_TYPE resType,
-			ENCRYPT_TYPE encrypt_type, REQUEST_FINISH_CALLBACK func , REQUEST_ERROR_CALLBACK error_call,object[] arg
+			string path, uint crc, int version , bool autoSave , bool autoClear , RESOURCE_TYPE resType,
+			ENCRYPT_TYPE encrypt_type, REQUEST_FINISH_CALLBACK func ,
+			REQUEST_ERROR_CALLBACK error_call,object[] arg
 			)
         {
-			if (s_cInstance.m_delDecryptFunc == null && encrypt_type == ENCRYPT_TYPE.ENCRYPT )
+			if (sInstance.m_delDecryptFunc == null && encrypt_type == ENCRYPT_TYPE.ENCRYPT )
             {
                 // Error
                 // 没有资源解密接口
@@ -458,7 +479,6 @@ namespace Game.Resource
 			owner.m_delErrorCall = error_call;
             owner.m_eResType = resType;
             owner.m_vecArg = arg;
-
 			if ( sInstance.m_eLoadType != LOAD_TYPE.NORMAL )
 			{ 
 				UnityEngine.Object obj = LoadEditor(resName);
@@ -490,21 +510,23 @@ namespace Game.Resource
 				return owner;
 			}
 
-			if (s_cInstance.m_mapRes.ContainsKey(resName))
+			if (sInstance.m_mapRes.ContainsKey(resName))
             {
                 //增加需求者
-				s_cInstance.m_mapRes[resName].AddRequireOwner(owner);
-				s_cInstance.m_mapRes[resName].Used();
-				if (s_cInstance.m_mapRes[resName].Complete)
+				sInstance.m_mapRes[resName].AddRequireOwner(owner);
+				sInstance.m_mapRes[resName].Used();
+				if (sInstance.m_mapRes[resName].Complete)
                 {
-					s_cInstance.m_mapRes[resName].CompleteCallBack();
+					sInstance.m_mapRes[resName].CompleteCallBack();
                 }
             }
             else
             {
-				ResourceRequireData rrd = new ResourceRequireData(path , crc , version , autoSave , resType, encrypt_type, s_cInstance.m_delDecryptFunc);
-				s_cInstance.m_lstRequires.Add(rrd);
-				s_cInstance.m_mapRes.Add(resName, rrd);
+				ResourceRequireData rrd = new ResourceRequireData(
+					path , crc , version , autoSave ,autoClear, resType,
+					encrypt_type, sInstance.m_delDecryptFunc);
+				sInstance.m_lstRequires.Add(rrd);
+				sInstance.m_mapRes.Add(resName, rrd);
                 rrd.AddRequireOwner(owner);
             }
 
@@ -516,13 +538,13 @@ namespace Game.Resource
         /// </summary>
         public static void Destory()
         {
-			foreach (ResourceRequireData item in s_cInstance.m_mapRes.Values)
+			foreach (ResourceRequireData item in sInstance.m_mapRes.Values)
             {
                 item.Destory( true );
             }
-			s_cInstance.m_mapRes.Clear();
-			s_cInstance.m_lstRequires.Clear();
-			s_cInstance.m_mapAsyncLoader.Clear();
+			sInstance.m_mapRes.Clear();
+			sInstance.m_lstRequires.Clear();
+			sInstance.m_mapAsyncLoader.Clear();
         }
 
         /// <summary>
@@ -530,7 +552,7 @@ namespace Game.Resource
         /// </summary>
         public static void ClearProgress()
         {
-			s_cInstance.m_lstRequires.Clear();
+			sInstance.m_lstRequires.Clear();
         }
 
         /// <summary>
@@ -540,14 +562,14 @@ namespace Game.Resource
         public static float GetProgress()
         {
             float progess = 0;
-			foreach (ResourceRequireData item in s_cInstance.m_lstRequires)
+			foreach (ResourceRequireData item in sInstance.m_lstRequires)
             {
                 progess += item.GetProgress();
             }
 
-			if ( s_cInstance.m_lstRequires.Count > 0)
+			if ( sInstance.m_lstRequires.Count > 0)
             {
-				return progess / s_cInstance.m_lstRequires.Count;
+				return progess / sInstance.m_lstRequires.Count;
             }
 
             return 1f;
@@ -560,7 +582,7 @@ namespace Game.Resource
         public static bool IsComplete()
         {
             bool finish = true;
-			foreach (ResourceRequireData item in s_cInstance.m_lstRequires)
+			foreach (ResourceRequireData item in sInstance.m_lstRequires)
             {
                 if (!item.Complete)
                     finish = false;
@@ -575,7 +597,7 @@ namespace Game.Resource
         public static void Update()
         {
             int sum = 0;
-			foreach (ResourceRequireData item in s_cInstance.m_lstRequires)
+			foreach (ResourceRequireData item in sInstance.m_lstRequires)
             {
                 if (item.Start && !item.Complete)
                     sum++;
@@ -584,7 +606,7 @@ namespace Game.Resource
             if (sum < LOAD_MAX_NUM)
             {
                 sum = 0;
-				foreach (ResourceRequireData item in s_cInstance.m_lstRequires)
+				foreach (ResourceRequireData item in sInstance.m_lstRequires)
                 {
                     if (!item.Start && !item.Complete)
                     {

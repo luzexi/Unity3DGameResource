@@ -1,4 +1,5 @@
 using UnityEngine;
+using System;
 using System.Collections.Generic;
 using System.Collections;
 
@@ -18,9 +19,11 @@ namespace Game.Resource
 	public class ResourceRequireData
 	{
 		private string m_strFilePath;       //资源地址
+		private Uri m_cPathUri;	//the path of uri
 		private uint m_iCRC; //CRC码
 		private int m_iVersion; //资源版本
 		private bool m_bAutoSave;	//auto save of the resources.
+		private bool m_bAutoClear;	//auto clear of the resources.
 		private float m_fLastUseTime;   //最近使用时间
 		private RESOURCE_TYPE m_eResType;   //资源类型
 		private ENCRYPT_TYPE m_eEncryType = ENCRYPT_TYPE.NORMAL;   //加密类型
@@ -45,16 +48,21 @@ namespace Game.Resource
 			this.m_fLastUseTime = Time.fixedTime;
 		}
 		
-		public ResourceRequireData(string path, uint crc, int version , bool autosave , RESOURCE_TYPE type, ENCRYPT_TYPE encrypt_type, DecryptBytesFunc decryptFunc)
+		public ResourceRequireData(
+			string path, uint crc, int version , bool autosave , bool autoClear ,
+			RESOURCE_TYPE type, ENCRYPT_TYPE encrypt_type, DecryptBytesFunc decryptFunc
+			)
 		{
 			this.m_strFilePath = path;
+			this.m_cPathUri = new Uri(path);
 			this.m_iCRC = crc;
 			this.m_iVersion = version;
+			this.m_bAutoSave = autosave;
+			this.m_bAutoClear = autoClear;
 			this.m_eResType = type;
 			this.m_eEncryType = encrypt_type;
 			this.m_funDecryptFunc = decryptFunc;
 			this.m_fLastUseTime = Time.fixedTime;
-			this.m_bAutoSave = autosave;
 		}
 		
 		/// <summary>
@@ -113,6 +121,11 @@ namespace Game.Resource
 			if (this.m_cLoader != null)
 				GameObject.Destroy(this.m_cLoader.gameObject);
 			this.m_cLoader = null;
+
+			if(this.m_bAutoClear)
+			{
+				ResourcesManager.UnloadResource(this.m_cPathUri.AbsolutePath);
+			}
 		}
 
 		/// <summary>

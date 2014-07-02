@@ -42,6 +42,7 @@ namespace Game.Resource
 		{
 			try
 			{
+				//
 				byte[] data = File.ReadAllBytes(path);
 				return data;
 			}

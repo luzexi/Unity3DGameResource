@@ -84,11 +84,13 @@ namespace Game.Resource
             this.m_bComplete = false;
             this.m_cWww = null;
             this.m_cCallBack = callback;
+			this.m_cErrorCallBack = error_call;
             this.m_delDecryptFunc = decryptFunc;
             this.m_eEncryptType = encrypt_type;
             this.m_eResType = res_type;
             this.m_iVersion = version;
 			this.m_fProgess = 0;
+			this.m_bAutoSave = autosave;
         }
 
         /// <summary>
@@ -164,9 +166,12 @@ namespace Game.Resource
 				if(this.m_bAutoSave)
 				{
 					Uri tmpUri = new Uri(this.m_strPath);
-					string dataPath = Application.persistentDataPath + "/" + tmpUri.AbsolutePath;
+					string dataPath = Application.persistentDataPath + tmpUri.AbsolutePath;
 					if(!tmpUri.IsFile)
+					{
 						CFile.WriteAllBytes(dataPath , this.m_cWww.bytes);
+					}
+
 				}
             }
 

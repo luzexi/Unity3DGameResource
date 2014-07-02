@@ -2,13 +2,11 @@
   <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" PreferredExecutionTarget="MonoDevelop.Default" />
   <MonoDevelop.Ide.Workbench ActiveDocument="Unity3DGameResource/ResourcesManager.cs">
     <Files>
-      <File FileName="Unity3DGameResource/ResourcesManager.cs" Line="469" Column="3" />
+      <File FileName="Unity3DGameResource/ResourcesManager.cs" Line="17" Column="2" />
+      <File FileName="Unity3DGameResource/LoadPackage.cs" Line="1" Column="1" />
       <File FileName="Unity3DGameResource/ResourceRequireData.cs" Line="1" Column="1" />
+      <File FileName="Unity3DGameResource/CFile.cs" Line="1" Column="1" />
       <File FileName="Unity3DGameResource/AsyncLoader.cs" Line="1" Column="1" />
-      <File FileName="Unity3DGameResource/CFile.cs" Line="59" Column="39" />
-      <File FileName="Unity3DGameResource/LoadPackage.cs" Line="105" Column="5" />
-      <File FileName="Unity3DGameResource/LoadTexture.cs" Line="33" Column="5" />
-      <File FileName="Unity3DGameResource/ResourcesTool.cs" Line="1" Column="1" />
     </Files>
     <Pads>
       <Pad Id="ProjectPad">
