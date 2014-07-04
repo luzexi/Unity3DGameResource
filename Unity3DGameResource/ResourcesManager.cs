@@ -60,7 +60,7 @@ namespace Game.Resource
     /// <summary>
     /// 资源管理类
     /// </summary>
-    public class ResourcesManager
+    public class ResourcesManager : MonoBehaviour
     {
         private const int LOAD_MAX_NUM = 3;		//Max load num
         private const string RESOURCE_POST = ".res";    //资源名后缀
@@ -85,15 +85,59 @@ namespace Game.Resource
 			get
 			{
 				if(s_cInstance == null)
-					s_cInstance = new ResourcesManager();
+				{
+					s_cInstance = (new GameObject("ResourcesManager")).AddComponent<ResourcesManager>();
+				}
 				return s_cInstance;
 			}
 		}
 
-        public ResourcesManager()
+		/// <summary>
+		/// Awake this instance.
+		/// </summary>
+        void Awake()
         {
             m_delDecryptFunc = CEncrypt.DecryptBytes;
         }
+
+		/// <summary>
+		/// Raises the destroy event.
+		/// </summary>
+		void OnDestroy()
+		{
+			if(s_cInstance == this )
+			{
+				s_cInstance = null;
+			}
+		}
+
+		/// <summary>
+		/// update the logic
+		/// </summary>
+		void Update()
+		{
+			int sum = 0;
+			foreach (ResourceRequireData item in sInstance.m_lstRequires)
+			{
+				if (item.Start && !item.Complete)
+					sum++;
+			}
+			
+			if (sum < LOAD_MAX_NUM)
+			{
+				sum = 0;
+				foreach (ResourceRequireData item in sInstance.m_lstRequires)
+				{
+					if (!item.Start && !item.Complete)
+					{
+						item.Initialize();
+						sum++;
+						if (sum >= LOAD_MAX_NUM)
+							break;
+					}
+				}
+			}
+		}
 
 		/// <summary>
 		/// Switchs the web resources load
@@ -395,10 +439,10 @@ namespace Game.Resource
 		/// <returns>The texture.</returns>
 		/// <param name="path">Path.</param>
 		/// <param name="arg">Argument.</param>
-		public static ResourceRequireOwner RequestTexture( string path )
+		public static ResourceRequireOwner RequestTexture( string path , long utime )
 		{
 			return RequestResouce(
-				path , 0 , 0 , true ,false, RESOURCE_TYPE.WEB_TEXTURE ,
+				path , 0 , 0 , true , utime ,false, RESOURCE_TYPE.WEB_TEXTURE ,
 				ENCRYPT_TYPE.NORMAL , null,null ,null);
 		}
 
@@ -411,26 +455,26 @@ namespace Game.Resource
 		/// <param name="arg">Argument.</param>
 		public static ResourceRequireOwner RequestTexture
 			(
-				string path , REQUEST_FINISH_CALLBACK CALLBACK ,
+				string path , long utime , REQUEST_FINISH_CALLBACK CALLBACK ,
 				REQUEST_ERROR_CALLBACK error_callback,  params object[] arg
 			)
 		{
 			return RequestResouce(
-				path,0,0,true,true,RESOURCE_TYPE.WEB_TEXTURE,
+				path,0,0,true , utime , true , RESOURCE_TYPE.WEB_TEXTURE,
 				ENCRYPT_TYPE.NORMAL , CALLBACK ,error_callback, arg
 			);
 		}
-
+		
 		/// <summary>
 		/// Requests the asset bundle.
 		/// </summary>
 		/// <returns>The asset bundle.</returns>
 		/// <param name="path">Path.</param>
 		/// <param name="arg">Argument.</param>
-		public static ResourceRequireOwner RequestAssetBundle( string path )
+		public static ResourceRequireOwner RequestAssetBundle( string path , long utime )
 		{
 			return RequestResouce(
-				path , 0 , 0 , true , false , RESOURCE_TYPE.WEB_ASSETBUNLDE ,
+				path , 0 , 0 , true , utime , false , RESOURCE_TYPE.WEB_ASSETBUNLDE ,
 				ENCRYPT_TYPE.NORMAL , null,null , null);
 		}
 
@@ -443,22 +487,32 @@ namespace Game.Resource
 		/// <param name="arg">Argument.</param>
 		public static ResourceRequireOwner RequestAssetBundle
 			(
-				string path , REQUEST_FINISH_CALLBACK CALLBACK ,
+				string path ,long utime , REQUEST_FINISH_CALLBACK CALLBACK ,
 				REQUEST_ERROR_CALLBACK error_callback, params object[] arg
 			)
 		{
 			return RequestResouce(
-				path , 0 , 0 , true , true , RESOURCE_TYPE.WEB_ASSETBUNLDE ,
+				path , 0 , 0 , true ,utime , true , RESOURCE_TYPE.WEB_ASSETBUNLDE ,
 				ENCRYPT_TYPE.NORMAL , CALLBACK ,error_callback, arg);
 		}
 
         /// <summary>
-        /// 装载资源
+        /// Requests the resouce.
         /// </summary>
-        /// <param name="path"></param>
-        /// <returns></returns>
+        /// <returns>The resouce.</returns>
+        /// <param name="path">Path.</param>
+        /// <param name="crc">Crc.</param>
+        /// <param name="version">Version.</param>
+        /// <param name="autoSave">If set to <c>true</c> auto save.</param>
+        /// <param name="utime">Utime.</param>
+        /// <param name="autoClear">If set to <c>true</c> auto clear.</param>
+        /// <param name="resType">Res type.</param>
+        /// <param name="encrypt_type">Encrypt_type.</param>
+        /// <param name="func">Func.</param>
+        /// <param name="error_call">Error_call.</param>
+        /// <param name="arg">Argument.</param>
 		public static ResourceRequireOwner RequestResouce(
-			string path, uint crc, int version , bool autoSave , bool autoClear , RESOURCE_TYPE resType,
+			string path, uint crc, int version , bool autoSave , long utime , bool autoClear , RESOURCE_TYPE resType,
 			ENCRYPT_TYPE encrypt_type, REQUEST_FINISH_CALLBACK func ,
 			REQUEST_ERROR_CALLBACK error_call,object[] arg
 			)
@@ -523,7 +577,7 @@ namespace Game.Resource
             else
             {
 				ResourceRequireData rrd = new ResourceRequireData(
-					path , crc , version , autoSave ,autoClear, resType,
+					path , crc , version , autoSave ,utime ,autoClear, resType,
 					encrypt_type, sInstance.m_delDecryptFunc);
 				sInstance.m_lstRequires.Add(rrd);
 				sInstance.m_mapRes.Add(resName, rrd);
@@ -589,34 +643,6 @@ namespace Game.Resource
             }
 
             return finish;
-        }
-
-        /// <summary>
-        /// 逻辑更新
-        /// </summary>
-        public static void Update()
-        {
-            int sum = 0;
-			foreach (ResourceRequireData item in sInstance.m_lstRequires)
-            {
-                if (item.Start && !item.Complete)
-                    sum++;
-            }
-
-            if (sum < LOAD_MAX_NUM)
-            {
-                sum = 0;
-				foreach (ResourceRequireData item in sInstance.m_lstRequires)
-                {
-                    if (!item.Start && !item.Complete)
-                    {
-                        item.Initialize();
-                        sum++;
-                        if (sum >= LOAD_MAX_NUM)
-                            break;
-                    }
-                }
-            }
         }
 
     }

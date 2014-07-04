@@ -1,8 +1,8 @@
 ﻿<Properties>
-  <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" PreferredExecutionTarget="MonoDevelop.Default" />
+  <MonoDevelop.Ide.Workspace ActiveConfiguration="Release" PreferredExecutionTarget="MonoDevelop.Default" />
   <MonoDevelop.Ide.Workbench ActiveDocument="Unity3DGameResource/ResourcesManager.cs">
     <Files>
-      <File FileName="Unity3DGameResource/ResourcesManager.cs" Line="17" Column="2" />
+      <File FileName="Unity3DGameResource/ResourcesManager.cs" Line="467" Column="3" />
       <File FileName="Unity3DGameResource/LoadPackage.cs" Line="1" Column="1" />
       <File FileName="Unity3DGameResource/ResourceRequireData.cs" Line="1" Column="1" />
       <File FileName="Unity3DGameResource/CFile.cs" Line="1" Column="1" />

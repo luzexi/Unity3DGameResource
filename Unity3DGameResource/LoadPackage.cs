@@ -20,6 +20,7 @@ namespace Game.Resource
     {
         private string m_strPath;   //加载路径
         private uint m_iCRC; //CRC码
+		private long m_lUTime;	//Unix Time
         private bool m_bComplete;   //是否加载完成
         public bool Complete
         {
@@ -55,7 +56,7 @@ namespace Game.Resource
         /// <param name="encrypt_type"></param>
         /// <param name="decryptFunc"></param> 
 		public static LoadPackage StartWWW(
-			string path, uint crc, int version , bool autosave , DOWN_FINISH_CALLBACK callback,
+			string path, uint crc, int version , bool autosave , long utime , DOWN_FINISH_CALLBACK callback,
 			DOWN_ERROR_CALLBACK error_call,
 			RESOURCE_TYPE res_type, ENCRYPT_TYPE encrypt_type, DecryptBytesFunc decryptFunc
 			)
@@ -63,7 +64,7 @@ namespace Game.Resource
             GameObject obj = new GameObject("WWWLoad");
             LoadPackage loader = obj.AddComponent<LoadPackage>();
             loader.Init(
-				path, crc, version , autosave , callback,error_call,
+				path, crc, version , autosave ,utime , callback,error_call,
 				res_type, encrypt_type, decryptFunc);
             loader.StartCoroutine("Load");
             return loader;
@@ -74,13 +75,14 @@ namespace Game.Resource
         /// </summary>
         /// <param name="id"></param>
 		public void Init(
-			string path, uint crc, int version , bool autosave , DOWN_FINISH_CALLBACK callback,
-			DOWN_ERROR_CALLBACK error_call,
+			string path, uint crc, int version , bool autosave , long utime,
+			DOWN_FINISH_CALLBACK callback,DOWN_ERROR_CALLBACK error_call,
 			RESOURCE_TYPE res_type, ENCRYPT_TYPE encrypt_type, DecryptBytesFunc decryptFunc
 			)
         {
             this.m_strPath = path;
             this.m_iCRC = crc;
+			this.m_lUTime = utime;
             this.m_bComplete = false;
             this.m_cWww = null;
             this.m_cCallBack = callback;
@@ -166,10 +168,11 @@ namespace Game.Resource
 				if(this.m_bAutoSave)
 				{
 					Uri tmpUri = new Uri(this.m_strPath);
+
 					string dataPath = Application.persistentDataPath + tmpUri.AbsolutePath;
 					if(!tmpUri.IsFile)
 					{
-						CFile.WriteAllBytes(dataPath , this.m_cWww.bytes);
+						CFile.WriteAllBytes(dataPath , this.m_cWww.bytes , this.m_lUTime);
 					}
 
 				}

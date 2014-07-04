@@ -58,15 +58,21 @@ namespace Game.Resource
 		/// </summary>
 		/// <param name="Path">Path.</param>
 		/// <param name="data">Data.</param>
-		public static void WriteAllBytes( string path , byte[] data )
+		public static void WriteAllBytes( string path , byte[] data , long utime )
 		{
 			try
 			{
 				string dir = Path.GetDirectoryName(path);
-				if (!Directory.Exists(dir)) {
+				if (!Directory.Exists(dir))
+				{
 					CreateDirectory(dir);
 				}
+				if(File.Exists(path))
+				{
+					File.Delete(path);
+				}
 				File.WriteAllBytes(path , data);
+				File.SetLastWriteTimeUtc(path , new DateTime(utime));
 			}
 			catch(Exception e)
 			{

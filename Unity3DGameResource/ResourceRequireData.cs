@@ -22,6 +22,7 @@ namespace Game.Resource
 		private Uri m_cPathUri;	//the path of uri
 		private uint m_iCRC; //CRC码
 		private int m_iVersion; //资源版本
+		private long m_lUTime;	//Unix Time
 		private bool m_bAutoSave;	//auto save of the resources.
 		private bool m_bAutoClear;	//auto clear of the resources.
 		private float m_fLastUseTime;   //最近使用时间
@@ -49,7 +50,7 @@ namespace Game.Resource
 		}
 		
 		public ResourceRequireData(
-			string path, uint crc, int version , bool autosave , bool autoClear ,
+			string path, uint crc, int version , bool autosave , long utime , bool autoClear ,
 			RESOURCE_TYPE type, ENCRYPT_TYPE encrypt_type, DecryptBytesFunc decryptFunc
 			)
 		{
@@ -57,6 +58,7 @@ namespace Game.Resource
 			this.m_cPathUri = new Uri(path);
 			this.m_iCRC = crc;
 			this.m_iVersion = version;
+			this.m_lUTime = utime;
 			this.m_bAutoSave = autosave;
 			this.m_bAutoClear = autoClear;
 			this.m_eResType = type;
@@ -90,8 +92,9 @@ namespace Game.Resource
 			this.m_bStart = true;
 
 			this.m_cLoader = LoadPackage.StartWWW(
-				this.m_strFilePath, this.m_iCRC, this.m_iVersion , this.m_bAutoSave, LoaderCallBack,
+				this.m_strFilePath, this.m_iCRC, this.m_iVersion , this.m_bAutoSave , this.m_lUTime , LoaderCallBack,
 				ErrorCallBack , this.m_eResType, this.m_eEncryType, this.m_funDecryptFunc);
+			this.m_cLoader.transform.parent = ResourcesManager.sInstance.transform;
 		}
 		
 		/// <summary>
