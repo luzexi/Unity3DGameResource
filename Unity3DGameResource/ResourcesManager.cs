@@ -4,6 +4,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+
 using REQUEST_FINISH_CALLBACK = System.Action<string , object , object[]>;
 using REQUEST_ERROR_CALLBACK = System.Action<string>;
 
@@ -13,6 +14,7 @@ using REQUEST_ERROR_CALLBACK = System.Action<string>;
 
 namespace Game.Resource
 {
+
     public delegate byte[] DecryptBytesFunc(byte[] datas);  //解密接口
 
     /// <summary>
@@ -24,6 +26,8 @@ namespace Game.Resource
         WEB_ASSETBUNLDE,     //网络AssetBundle物体资源
         WEB_TEXT_STR,   //网络文本文件资源
         WEB_TEXT_BYTES, //网络2进制文件资源
+		WEB_AUDIOCLIP,	//AudioClip
+		WEB_MOVIETEXTURE,	//MovieTexture
     }
 
     /// <summary>
@@ -60,7 +64,7 @@ namespace Game.Resource
     /// <summary>
     /// 资源管理类
     /// </summary>
-    public class ResourcesManager : MonoBehaviour
+    public partial class ResourcesManager : MonoBehaviour
     {
         private const int LOAD_MAX_NUM = 3;		//Max load num
         private const string RESOURCE_POST = ".res";    //资源名后缀
@@ -433,68 +437,7 @@ namespace Game.Resource
             //GC.Collect();
         }
 
-		/// <summary>
-		/// Requests the texture.
-		/// </summary>
-		/// <returns>The texture.</returns>
-		/// <param name="path">Path.</param>
-		/// <param name="arg">Argument.</param>
-		public static ResourceRequireOwner RequestTexture( string path , long utime )
-		{
-			return RequestResouce(
-				path , 0 , 0 , true , utime ,false, RESOURCE_TYPE.WEB_TEXTURE ,
-				ENCRYPT_TYPE.NORMAL , null,null ,null);
-		}
 
-		/// <summary>
-		/// Requests the texture.
-		/// </summary>
-		/// <returns>The texture.</returns>
-		/// <param name="path">Path.</param>
-		/// <param name="CALLBACK">CALLBAC.</param>
-		/// <param name="arg">Argument.</param>
-		public static ResourceRequireOwner RequestTexture
-			(
-				string path , long utime , REQUEST_FINISH_CALLBACK CALLBACK ,
-				REQUEST_ERROR_CALLBACK error_callback,  params object[] arg
-			)
-		{
-			return RequestResouce(
-				path,0,0,true , utime , true , RESOURCE_TYPE.WEB_TEXTURE,
-				ENCRYPT_TYPE.NORMAL , CALLBACK ,error_callback, arg
-			);
-		}
-		
-		/// <summary>
-		/// Requests the asset bundle.
-		/// </summary>
-		/// <returns>The asset bundle.</returns>
-		/// <param name="path">Path.</param>
-		/// <param name="arg">Argument.</param>
-		public static ResourceRequireOwner RequestAssetBundle( string path , long utime )
-		{
-			return RequestResouce(
-				path , 0 , 0 , true , utime , false , RESOURCE_TYPE.WEB_ASSETBUNLDE ,
-				ENCRYPT_TYPE.NORMAL , null,null , null);
-		}
-
-		/// <summary>
-		/// Requests the asset bundle.
-		/// </summary>
-		/// <returns>The asset bundle.</returns>
-		/// <param name="path">Path.</param>
-		/// <param name="CALLBACK">CALLBAC.</param>
-		/// <param name="arg">Argument.</param>
-		public static ResourceRequireOwner RequestAssetBundle
-			(
-				string path ,long utime , REQUEST_FINISH_CALLBACK CALLBACK ,
-				REQUEST_ERROR_CALLBACK error_callback, params object[] arg
-			)
-		{
-			return RequestResouce(
-				path , 0 , 0 , true ,utime , true , RESOURCE_TYPE.WEB_ASSETBUNLDE ,
-				ENCRYPT_TYPE.NORMAL , CALLBACK ,error_callback, arg);
-		}
 
         /// <summary>
         /// Requests the resouce.
