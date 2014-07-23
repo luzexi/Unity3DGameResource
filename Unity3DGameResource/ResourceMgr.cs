@@ -64,7 +64,7 @@ namespace Game.Resource
     /// <summary>
     /// 资源管理类
     /// </summary>
-    public partial class ResourcesManager : MonoBehaviour
+    public partial class ResourceMgr : MonoBehaviour
     {
         private const int LOAD_MAX_NUM = 3;		//Max load num
         private const string RESOURCE_POST = ".res";    //资源名后缀
@@ -82,15 +82,15 @@ namespace Game.Resource
         //异步加载
 		private Dictionary<string, object> m_mapAsyncLoader = new Dictionary<string, object>();    //异步映射
 
-		private static ResourcesManager s_cInstance;
+		private static ResourceMgr s_cInstance;
 
-		public static ResourcesManager sInstance
+		public static ResourceMgr sInstance
 		{
 			get
 			{
 				if(s_cInstance == null)
 				{
-					s_cInstance = (new GameObject("ResourcesManager")).AddComponent<ResourcesManager>();
+					s_cInstance = (new GameObject("ResourcesManager")).AddComponent<ResourceMgr>();
 				}
 				return s_cInstance;
 			}
@@ -267,7 +267,7 @@ namespace Game.Resource
             {
 				if (!sInstance.m_mapAsyncLoader.ContainsKey(resName))
                 {
-					UnityEngine.Object obj = ResourcesManager.LoadEditor(resName);
+					UnityEngine.Object obj = ResourceMgr.LoadEditor(resName);
 					sInstance.m_mapAsyncLoader.Add(resName, obj);
                 }
                 else
@@ -276,77 +276,6 @@ namespace Game.Resource
                 }
             }
         }
-
-		/// <summary>
-		/// Load editor resources
-		/// </summary>
-		/// <returns>The loacl.</returns>
-		private static UnityEngine.Object LoadEditor( string path )
-		{
-			UnityEngine.Object obj = Resources.LoadAssetAtPath( Application.dataPath + path , typeof(UnityEngine.Object));
-			if(obj != null )
-			{
-				return obj;
-			}
-			
-			return null;
-		}
-
-		/// <summary>
-		/// Loads the resources in the unity.
-		/// </summary>
-		/// <returns>The resources.</returns>
-		public static UnityEngine.Object LoadResources( string filePath)
-		{
-			return UnityEngine.Resources.Load(filePath);
-		}
-
-        /// <summary>
-        /// 读取资源
-        /// </summary>
-        /// <param name="path"></param>
-        /// <returns></returns>
-        public static object LoadAsset(string path)
-        {
-			if (sInstance.m_mapRes.ContainsKey(path))
-            {
-				sInstance.m_mapRes[path].Used();
-				if (sInstance.m_mapRes[path].GetAssetObject() is AssetBundle)
-                {
-					return (sInstance.m_mapRes[path].GetAssetObject() as AssetBundle).mainAsset;
-                }
-				return sInstance.m_mapRes[path].GetAssetObject();
-            }
-            else
-            {
-                Debug.LogError("Resource is null. path " + path);
-            }
-            return null;
-        }
-
-		/// <summary>
-		/// load the resource in assetbundle.
-		/// </summary>
-		/// <returns>The asset.</returns>
-		/// <param name="path">Path.</param>
-		/// <param name="name">Name.</param>
-		public static UnityEngine.Object LoadAsset( string path , string name )
-		{
-			if (sInstance.m_mapRes.ContainsKey(path))
-			{
-				sInstance.m_mapRes[path].Used();
-				if (sInstance.m_mapRes[path].GetAssetObject() is AssetBundle)
-				{
-					return (sInstance.m_mapRes[path].GetAssetObject() as AssetBundle).Load(name);
-				}
-				Debug.LogError("Resource is not assetbundle. path " + path);
-			}
-			else
-			{
-				Debug.LogError("Resource is null. path " + path);
-			}
-			return null;
-		}
 
         /// <summary>
         /// 卸载资源

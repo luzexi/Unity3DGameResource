@@ -94,7 +94,7 @@ namespace Game.Resource
 			this.m_cLoader = LoadPackage.StartWWW(
 				this.m_strFilePath, this.m_iCRC, this.m_iVersion , this.m_bAutoSave , this.m_lUTime , LoaderCallBack,
 				ErrorCallBack , this.m_eResType, this.m_eEncryType, this.m_funDecryptFunc);
-			this.m_cLoader.transform.parent = ResourcesManager.sInstance.transform;
+			this.m_cLoader.transform.parent = ResourceMgr.sInstance.transform;
 		}
 		
 		/// <summary>
@@ -127,7 +127,7 @@ namespace Game.Resource
 
 			if(this.m_bAutoClear)
 			{
-				ResourcesManager.UnloadResource(this.m_cPathUri.AbsolutePath);
+				ResourceMgr.UnloadResource(this.m_cPathUri.AbsolutePath);
 			}
 		}
 

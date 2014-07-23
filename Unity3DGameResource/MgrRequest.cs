@@ -15,7 +15,7 @@ namespace Game.Resource
 	/// <summary>
 	/// 资源管理类
 	/// </summary>
-	public partial class ResourcesManager : MonoBehaviour
+	public partial class ResourceMgr : MonoBehaviour
 	{
 
 //===================================== texture ===================================

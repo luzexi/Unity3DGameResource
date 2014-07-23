@@ -42,10 +42,11 @@
     <Compile Include="AsyncLoader.cs" />
     <Compile Include="LoadPackage.cs" />
     <Compile Include="ResourceRequireData.cs" />
-    <Compile Include="ResourcesManager.cs" />
     <Compile Include="ResourcesTool.cs" />
     <Compile Include="CFile.cs" />
     <Compile Include="MgrRequest.cs" />
+    <Compile Include="ResourceMgr.cs" />
+    <Compile Include="MgrLoad.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
 </Project>
