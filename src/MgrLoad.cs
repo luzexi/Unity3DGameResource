@@ -30,7 +30,7 @@ namespace Game.Resource
 		/// Loads the resources in the unity.
 		/// </summary>
 		/// <returns>The resources.</returns>
-		public static UnityEngine.Object LoadResources( string filePath)
+		public static UnityEngine.Object LoadResource( string filePath)
 		{
 			return UnityEngine.Resources.Load(filePath);
 		}
