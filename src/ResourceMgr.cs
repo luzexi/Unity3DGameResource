@@ -471,6 +471,8 @@ namespace Game.Resource
 			sInstance.m_mapRes.Clear();
 			sInstance.m_lstRequires.Clear();
 			sInstance.m_mapAsyncLoader.Clear();
+			GameObject.DestroyImmediate(sInstance.gameObject);
+			s_cInstance = null;
         }
 
         /// <summary>
