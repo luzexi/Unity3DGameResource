@@ -1,7 +1,9 @@
 using UnityEngine;
 using System.Collections;
 
-
+//	MgrLoad.cs
+//	Author: Lu Zexi
+//	2014-09-14
 
 
 namespace Game.Resource
