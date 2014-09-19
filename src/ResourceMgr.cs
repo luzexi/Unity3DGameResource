@@ -4,16 +4,14 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-
-using REQUEST_FINISH_CALLBACK = System.Action<string , object , object[]>;
-using REQUEST_ERROR_CALLBACK = System.Action<string>;
-
 //  ResourceManager.cs
 //  Lu Zexi
 //  2012-7-5
 
 namespace Game.Resource
 {
+	using REQUEST_FINISH_CALLBACK = System.Action<string , object , object[]>;
+	using REQUEST_ERROR_CALLBACK = System.Action<string>;
 
     public delegate byte[] DecryptBytesFunc(byte[] datas);  //解密接口
 
@@ -22,6 +20,8 @@ namespace Game.Resource
     /// </summary>
     public enum RESOURCE_TYPE
     { 
+		NONE,
+		PREFAB,
         WEB_TEXTURE,    //网络贴图资源
         WEB_ASSETBUNLDE,     //网络AssetBundle物体资源
         WEB_TEXT_STR,   //网络文本文件资源

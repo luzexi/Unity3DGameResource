@@ -13,14 +13,31 @@ using System.Collections.Generic;
 
 namespace Game.Resource
 {
+	using REQUEST_ERROR_CALLBACK = System.Action<string>;
 
 	//Resources request collector
 	public class RequestCollection : MonoBehaviour
 	{
+		public delegate void REQUEST_COMPLETE_CALLBACK(Dictionary<string,object> resMap);
+
 		private List<ResourceRequireOwner> m_lstOwner = new List<ResourceRequireOwner>();
-		
+
+		public REQUEST_COMPLETE_CALLBACK m_delCompleteCallback = null;
+		public REQUEST_ERROR_CALLBACK m_delErrorCallback = null;
+
 		//temp var
 		private float checkTime;
+
+
+		/// <summary>
+		/// Create this instance.
+		/// </summary>
+		public static RequestCollection Create()
+		{
+			GameObject go = new GameObject("RequestCollection");
+			RequestCollection col = go.AddComponent<RequestCollection>();
+			return col;
+		}
 
 		void Update()
 		{
@@ -43,22 +60,24 @@ namespace Game.Resource
 					{
 						resMap[item.m_cResName] = item.m_cAsset;
 					}
-					this.CompleteCallback(resMap);
+					if(this.m_delCompleteCallback != null)
+						this.m_delCompleteCallback(resMap);
 					this.m_lstOwner.Clear();
+					GameObject.Destroy(this.gameObject);
 				}
 			}
 		}
 
-		//complete callback
-		protected virtual void CompleteCallback( Dictionary<string , object> resMap)
-		{
-			//
-		}
+//===================================== Resource ===================================
 
-		//error callback
-		protected virtual void ErrorCallback(string error)
+		public ResourceRequireOwner RequestPrefab( string path )
 		{
-			//
+			ResourceRequireOwner owner = new ResourceRequireOwner();
+			owner.m_bComplete = true;
+			owner.m_cResName = path;
+			owner.m_eResType = RESOURCE_TYPE.PREFAB;
+			owner.m_cAsset = Resources.Load(path);
+			return owner;
 		}
 
 
@@ -73,7 +92,7 @@ namespace Game.Resource
 		{
 			ResourceRequireOwner owner = ResourceMgr.RequestResouce(
 				path , 0 , 0 , false , 0 ,true, RESOURCE_TYPE.WEB_TEXTURE ,
-				ENCRYPT_TYPE.NORMAL , null,ErrorCallback ,null);
+				ENCRYPT_TYPE.NORMAL , null,this.m_delErrorCallback ,null);
 			this.m_lstOwner.Add(owner);
 			return owner;
 		}
@@ -88,7 +107,7 @@ namespace Game.Resource
 		{
 			ResourceRequireOwner owner = ResourceMgr.RequestResouce(
 				path , 0 , 0 , true , utime ,true, RESOURCE_TYPE.WEB_TEXTURE ,
-				ENCRYPT_TYPE.NORMAL , null,ErrorCallback ,null);
+				ENCRYPT_TYPE.NORMAL , null,this.m_delErrorCallback ,null);
 			this.m_lstOwner.Add(owner);
 			return owner;
 		}
@@ -103,7 +122,7 @@ namespace Game.Resource
 		{
 			ResourceRequireOwner owner = ResourceMgr.RequestResouce(
 				path , 0 , 0 , false , 0 , true , RESOURCE_TYPE.WEB_ASSETBUNLDE ,
-				ENCRYPT_TYPE.NORMAL , null,ErrorCallback , null);
+				ENCRYPT_TYPE.NORMAL , null,this.m_delErrorCallback , null);
 			this.m_lstOwner.Add(owner);
 			return owner;
 		}
@@ -118,7 +137,7 @@ namespace Game.Resource
 		{
 			ResourceRequireOwner owner = ResourceMgr.RequestResouce(
 				path , 0 , 0 , true , utime , true , RESOURCE_TYPE.WEB_ASSETBUNLDE ,
-				ENCRYPT_TYPE.NORMAL , null ,ErrorCallback , null);
+				ENCRYPT_TYPE.NORMAL , null ,this.m_delErrorCallback , null);
 			this.m_lstOwner.Add(owner);
 			return owner;
 		}
@@ -135,7 +154,7 @@ namespace Game.Resource
 		{
 			ResourceRequireOwner owner =  ResourceMgr.RequestResouce(
 				path , 0 , 0 , false , 0 , true , RESOURCE_TYPE.WEB_TEXT_STR ,
-				ENCRYPT_TYPE.NORMAL , null , ErrorCallback , null
+				ENCRYPT_TYPE.NORMAL , null , this.m_delErrorCallback , null
 				);
 			this.m_lstOwner.Add(owner);
 			return owner;
@@ -151,7 +170,7 @@ namespace Game.Resource
 		{
 			ResourceRequireOwner owner = ResourceMgr.RequestResouce(
 				path , 0 , 0 , true , utime , true , RESOURCE_TYPE.WEB_TEXT_STR ,
-				ENCRYPT_TYPE.NORMAL , null , ErrorCallback , null
+				ENCRYPT_TYPE.NORMAL , null , this.m_delErrorCallback , null
 				);
 			this.m_lstOwner.Add(owner);
 			return owner;
@@ -168,7 +187,7 @@ namespace Game.Resource
 		{
 			ResourceRequireOwner owner = ResourceMgr.RequestResouce(
 				path , 0 , 0 , false , 0 , true , RESOURCE_TYPE.WEB_TEXT_BYTES ,
-				ENCRYPT_TYPE.NORMAL , null , ErrorCallback , null
+				ENCRYPT_TYPE.NORMAL , null , this.m_delErrorCallback , null
 				);
 			this.m_lstOwner.Add(owner);
 			return owner;
@@ -184,7 +203,7 @@ namespace Game.Resource
 		{
 			ResourceRequireOwner owner = ResourceMgr.RequestResouce(
 				path , 0 , 0 , true , utime , true , RESOURCE_TYPE.WEB_TEXT_BYTES ,
-				ENCRYPT_TYPE.NORMAL , null , ErrorCallback , null
+				ENCRYPT_TYPE.NORMAL , null , this.m_delErrorCallback , null
 				);
 			this.m_lstOwner.Add(owner);
 			return owner;
@@ -201,7 +220,7 @@ namespace Game.Resource
 		{
 			ResourceRequireOwner owner = ResourceMgr.RequestResouce(
 				path , 0 , 0 , false , 0 , true , RESOURCE_TYPE.WEB_AUDIOCLIP ,
-				ENCRYPT_TYPE.NORMAL , null , ErrorCallback , null
+				ENCRYPT_TYPE.NORMAL , null , this.m_delErrorCallback , null
 				);
 			this.m_lstOwner.Add(owner);
 			return owner;
@@ -217,7 +236,7 @@ namespace Game.Resource
 		{
 			ResourceRequireOwner owner = ResourceMgr.RequestResouce(
 				path , 0 , 0 , true , utime , true , RESOURCE_TYPE.WEB_AUDIOCLIP ,
-				ENCRYPT_TYPE.NORMAL , null , ErrorCallback , null
+				ENCRYPT_TYPE.NORMAL , null , this.m_delErrorCallback , null
 				);
 			this.m_lstOwner.Add(owner);
 			return owner;
@@ -234,7 +253,7 @@ namespace Game.Resource
 		{
 			ResourceRequireOwner owner = ResourceMgr.RequestResouce(
 				path , 0 , 0 , false , 0 , true , RESOURCE_TYPE.WEB_MOVIETEXTURE ,
-				ENCRYPT_TYPE.NORMAL , null , ErrorCallback , null
+				ENCRYPT_TYPE.NORMAL , null , this.m_delErrorCallback , null
 				);
 			this.m_lstOwner.Add(owner);
 			return owner;
@@ -250,7 +269,7 @@ namespace Game.Resource
 		{
 			ResourceRequireOwner owner = ResourceMgr.RequestResouce(
 				path , 0 , 0 , true , utime , true , RESOURCE_TYPE.WEB_MOVIETEXTURE ,
-				ENCRYPT_TYPE.NORMAL , null , ErrorCallback , null
+				ENCRYPT_TYPE.NORMAL , null , this.m_delErrorCallback , null
 				);
 			this.m_lstOwner.Add(owner);
 			return owner;
