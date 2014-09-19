@@ -50,6 +50,8 @@ namespace Game.Resource
 		public REQUEST_FINISH_CALLBACK m_delCallBack;  //回调方法
 		public REQUEST_ERROR_CALLBACK m_delErrorCall;	//error callback
         public object[] m_vecArg;   //参数
+        public bool m_bComplete;    //是否完成
+        public object m_cAsset;    //资源变量
     }
 
 	/// <summary>
@@ -517,6 +519,12 @@ namespace Game.Resource
             }
 
             return finish;
+        }
+
+        //判断是否完成加载某个资源
+        public static bool IsComplete(string resName)
+        {
+            return  sInstance.m_mapRes.ContainsKey(resName) && sInstance.m_mapRes[resName].Complete;           
         }
 
     }

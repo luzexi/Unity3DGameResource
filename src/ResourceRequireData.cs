@@ -130,7 +130,7 @@ namespace Game.Resource
 				ResourceMgr.UnloadResource(this.m_cPathUri.AbsolutePath);
 			}
 		}
-
+ 
 		/// <summary>
 		/// error of the loader callback
 		/// </summary>
@@ -168,6 +168,8 @@ namespace Game.Resource
 			this.m_lstOwners.Clear();
 			foreach (ResourceRequireOwner item in lst)
 			{
+				item.m_bComplete = true;
+				item.m_cAsset = this.m_cAsset;
 				if (item.m_delCallBack != null)
 				{
 					item.m_delCallBack(item.m_cResName, this.m_cAsset, item.m_vecArg);
