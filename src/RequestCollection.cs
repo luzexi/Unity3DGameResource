@@ -77,6 +77,7 @@ namespace Game.Resource
 			owner.m_cResName = path;
 			owner.m_eResType = RESOURCE_TYPE.PREFAB;
 			owner.m_cAsset = Resources.Load(path);
+			this.m_lstOwner.Add(owner);
 			return owner;
 		}
 
