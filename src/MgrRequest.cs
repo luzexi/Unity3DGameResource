@@ -2,7 +2,7 @@ using UnityEngine;
 using System.Collections;
 
 using REQUEST_FINISH_CALLBACK = System.Action<string , object , object[]>;
-using REQUEST_ERROR_CALLBACK = System.Action<string>;
+using REQUEST_ERROR_CALLBACK = System.Action<string , object>;
 
 
 //	Request.cs
@@ -28,7 +28,7 @@ namespace Game.Resource
 		public static ResourceRequireOwner RequestTexture( string path)
 		{
 			return RequestResouce(
-				path , 0 , 0 , false , 0 ,false, RESOURCE_TYPE.WEB_TEXTURE ,
+				path, false , 0 ,false, RESOURCE_TYPE.WEB_TEXTURE ,
 				ENCRYPT_TYPE.NORMAL , null,null ,null);
 		}
 		
@@ -41,7 +41,7 @@ namespace Game.Resource
 		public static ResourceRequireOwner RequestTexture( string path , long utime )
 		{
 			return RequestResouce(
-				path , 0 , 0 , true , utime ,false, RESOURCE_TYPE.WEB_TEXTURE ,
+				path, true , utime ,false, RESOURCE_TYPE.WEB_TEXTURE ,
 				ENCRYPT_TYPE.NORMAL , null,null ,null);
 		}
 		
@@ -59,7 +59,7 @@ namespace Game.Resource
 			)
 		{
 			return RequestResouce(
-				path,0,0,false , 0 , true , RESOURCE_TYPE.WEB_TEXTURE,
+				path,false , 0 , true , RESOURCE_TYPE.WEB_TEXTURE,
 				ENCRYPT_TYPE.NORMAL , finish_callback ,error_callback, arg
 				);
 		}
@@ -78,7 +78,7 @@ namespace Game.Resource
 				)
 		{
 			return RequestResouce(
-				path,0,0,true , utime , true , RESOURCE_TYPE.WEB_TEXTURE,
+				path,true , utime , true , RESOURCE_TYPE.WEB_TEXTURE,
 				ENCRYPT_TYPE.NORMAL , CALLBACK ,error_callback, arg
 				);
 		}
@@ -93,7 +93,7 @@ namespace Game.Resource
 		public static ResourceRequireOwner RequestAssetBundle( string path)
 		{
 			return RequestResouce(
-				path , 0 , 0 , false , 0 , false , RESOURCE_TYPE.WEB_ASSETBUNLDE ,
+				path , false , 0 , false , RESOURCE_TYPE.WEB_ASSETBUNLDE ,
 				ENCRYPT_TYPE.NORMAL , null,null , null);
 		}
 
@@ -106,7 +106,7 @@ namespace Game.Resource
 		public static ResourceRequireOwner RequestAssetBundle( string path , long utime )
 		{
 			return RequestResouce(
-				path , 0 , 0 , true , utime , false , RESOURCE_TYPE.WEB_ASSETBUNLDE ,
+				path , true , utime , false , RESOURCE_TYPE.WEB_ASSETBUNLDE ,
 				ENCRYPT_TYPE.NORMAL , null,null , null);
 		}
 
@@ -125,7 +125,7 @@ namespace Game.Resource
 			)
 		{
 			return RequestResouce(
-				path , 0 , 0 , true ,0 , true , RESOURCE_TYPE.WEB_ASSETBUNLDE ,
+				path , true ,0 , true , RESOURCE_TYPE.WEB_ASSETBUNLDE ,
 				ENCRYPT_TYPE.NORMAL , finish_callback ,error_callback, arg);
 		}
 
@@ -143,7 +143,7 @@ namespace Game.Resource
 				)
 		{
 			return RequestResouce(
-				path , 0 , 0 , true ,utime , true , RESOURCE_TYPE.WEB_ASSETBUNLDE ,
+				path , true ,utime , true , RESOURCE_TYPE.WEB_ASSETBUNLDE ,
 				ENCRYPT_TYPE.NORMAL , CALLBACK ,error_callback, arg);
 		}
 
@@ -158,7 +158,7 @@ namespace Game.Resource
 		public static ResourceRequireOwner RequestTextStr( string path)
 		{
 			return RequestResouce(
-				path , 0 , 0 , false , 0 , false , RESOURCE_TYPE.WEB_TEXT_STR ,
+				path , false , 0 , false , RESOURCE_TYPE.WEB_TEXT_STR ,
 				ENCRYPT_TYPE.NORMAL , null , null , null
 				);
 		}
@@ -172,7 +172,7 @@ namespace Game.Resource
 		public static ResourceRequireOwner RequestTextStr( string path , long utime )
 		{
 			return RequestResouce(
-				path , 0 , 0 , true , utime , false , RESOURCE_TYPE.WEB_TEXT_STR ,
+				path , true , utime , false , RESOURCE_TYPE.WEB_TEXT_STR ,
 				ENCRYPT_TYPE.NORMAL , null , null , null
 				);
 		}
@@ -192,7 +192,7 @@ namespace Game.Resource
 				)
 		{
 			return RequestResouce(
-				path , 0 , 0 , true ,0 , true , RESOURCE_TYPE.WEB_TEXT_STR ,
+				path , true ,0 , true , RESOURCE_TYPE.WEB_TEXT_STR ,
 				ENCRYPT_TYPE.NORMAL , finish_callback ,error_callback, arg
 				);
 		}
@@ -213,7 +213,7 @@ namespace Game.Resource
 				)
 		{
 			return RequestResouce(
-				path , 0 , 0 , true ,utime , true , RESOURCE_TYPE.WEB_TEXT_STR ,
+				path , true ,utime , true , RESOURCE_TYPE.WEB_TEXT_STR ,
 				ENCRYPT_TYPE.NORMAL , CALLBACK ,error_callback, arg
 				);
 		}
@@ -228,7 +228,7 @@ namespace Game.Resource
 		public static ResourceRequireOwner RequestTextBytes( string path)
 		{
 			return RequestResouce(
-				path , 0 , 0 , false , 0 , false , RESOURCE_TYPE.WEB_TEXT_BYTES ,
+				path , false , 0 , false , RESOURCE_TYPE.WEB_TEXT_BYTES ,
 				ENCRYPT_TYPE.NORMAL , null , null , null
 				);
 		}
@@ -242,7 +242,7 @@ namespace Game.Resource
 		public static ResourceRequireOwner RequestTextBytes( string path , long utime )
 		{
 			return RequestResouce(
-				path , 0 , 0 , true , utime , false , RESOURCE_TYPE.WEB_TEXT_BYTES ,
+				path , true , utime , false , RESOURCE_TYPE.WEB_TEXT_BYTES ,
 				ENCRYPT_TYPE.NORMAL , null , null , null
 				);
 		}
@@ -262,7 +262,7 @@ namespace Game.Resource
 				)
 		{
 			return RequestResouce(
-				path , 0 , 0 , true ,0 , true , RESOURCE_TYPE.WEB_TEXT_BYTES ,
+				path , true ,0 , true , RESOURCE_TYPE.WEB_TEXT_BYTES ,
 				ENCRYPT_TYPE.NORMAL , finish_callback ,error_callback, arg
 				);
 		}
@@ -283,7 +283,7 @@ namespace Game.Resource
 				)
 		{
 			return RequestResouce(
-				path , 0 , 0 , true ,utime , true , RESOURCE_TYPE.WEB_TEXT_BYTES ,
+				path , true ,utime , true , RESOURCE_TYPE.WEB_TEXT_BYTES ,
 				ENCRYPT_TYPE.NORMAL , CALLBACK ,error_callback, arg
 				);
 		}
@@ -298,7 +298,7 @@ namespace Game.Resource
 		public static ResourceRequireOwner RequestAudioClip( string path)
 		{
 			return RequestResouce(
-				path , 0 , 0 , false , 0 , false , RESOURCE_TYPE.WEB_AUDIOCLIP ,
+				path , false , 0 , false , RESOURCE_TYPE.WEB_AUDIOCLIP ,
 				ENCRYPT_TYPE.NORMAL , null , null , null
 				);
 		}
@@ -312,7 +312,7 @@ namespace Game.Resource
 		public static ResourceRequireOwner RequestAudioClip( string path , long utime )
 		{
 			return RequestResouce(
-				path , 0 , 0 , true , utime , false , RESOURCE_TYPE.WEB_AUDIOCLIP ,
+				path , true , utime , false , RESOURCE_TYPE.WEB_AUDIOCLIP ,
 				ENCRYPT_TYPE.NORMAL , null , null , null
 				);
 		}
@@ -332,7 +332,7 @@ namespace Game.Resource
 				)
 		{
 			return RequestResouce(
-				path , 0 , 0 , true ,0 , true , RESOURCE_TYPE.WEB_AUDIOCLIP ,
+				path , true ,0 , true , RESOURCE_TYPE.WEB_AUDIOCLIP ,
 				ENCRYPT_TYPE.NORMAL , finish_callback ,error_callback, arg
 				);
 		}
@@ -353,7 +353,7 @@ namespace Game.Resource
 				)
 		{
 			return RequestResouce(
-				path , 0 , 0 , true ,utime , true , RESOURCE_TYPE.WEB_AUDIOCLIP ,
+				path , true ,utime , true , RESOURCE_TYPE.WEB_AUDIOCLIP ,
 				ENCRYPT_TYPE.NORMAL , CALLBACK ,error_callback, arg
 				);
 		}
@@ -368,7 +368,7 @@ namespace Game.Resource
 		public static ResourceRequireOwner RequestMovie( string path)
 		{
 			return RequestResouce(
-				path , 0 , 0 , false , 0 , false , RESOURCE_TYPE.WEB_MOVIETEXTURE ,
+				path , false , 0 , false , RESOURCE_TYPE.WEB_MOVIETEXTURE ,
 				ENCRYPT_TYPE.NORMAL , null , null , null
 				);
 		}
@@ -382,7 +382,7 @@ namespace Game.Resource
 		public static ResourceRequireOwner RequestMovie( string path , long utime )
 		{
 			return RequestResouce(
-				path , 0 , 0 , true , utime , false , RESOURCE_TYPE.WEB_MOVIETEXTURE ,
+				path , true , utime , false , RESOURCE_TYPE.WEB_MOVIETEXTURE ,
 				ENCRYPT_TYPE.NORMAL , null , null , null
 				);
 		}
@@ -402,7 +402,7 @@ namespace Game.Resource
 				)
 		{
 			return RequestResouce(
-				path , 0 , 0 , true ,0 , true , RESOURCE_TYPE.WEB_MOVIETEXTURE ,
+				path , true ,0 , true , RESOURCE_TYPE.WEB_MOVIETEXTURE ,
 				ENCRYPT_TYPE.NORMAL , finish_callback ,error_callback, arg
 				);
 		}
@@ -423,7 +423,7 @@ namespace Game.Resource
 				)
 		{
 			return RequestResouce(
-				path , 0 , 0 , true ,utime , true , RESOURCE_TYPE.WEB_MOVIETEXTURE ,
+				path , true ,utime , true , RESOURCE_TYPE.WEB_MOVIETEXTURE ,
 				ENCRYPT_TYPE.NORMAL , CALLBACK ,error_callback, arg
 				);
 		}

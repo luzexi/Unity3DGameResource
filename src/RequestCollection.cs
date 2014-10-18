@@ -13,7 +13,7 @@ using System.Collections.Generic;
 
 namespace Game.Resource
 {
-	using REQUEST_ERROR_CALLBACK = System.Action<string>;
+	using REQUEST_ERROR_CALLBACK = System.Action<string,object>;
 
 	//Resources request collector
 	public class RequestCollection : MonoBehaviour
@@ -92,7 +92,7 @@ namespace Game.Resource
 		public ResourceRequireOwner RequestTexture( string path)
 		{
 			ResourceRequireOwner owner = ResourceMgr.RequestResouce(
-				path , 0 , 0 , false , 0 ,true, RESOURCE_TYPE.WEB_TEXTURE ,
+				path , false , 0 ,true, RESOURCE_TYPE.WEB_TEXTURE ,
 				ENCRYPT_TYPE.NORMAL , null,this.m_delErrorCallback ,null);
 			this.m_lstOwner.Add(owner);
 			return owner;
@@ -107,7 +107,7 @@ namespace Game.Resource
 		public ResourceRequireOwner RequestTexture( string path , long utime )
 		{
 			ResourceRequireOwner owner = ResourceMgr.RequestResouce(
-				path , 0 , 0 , true , utime ,true, RESOURCE_TYPE.WEB_TEXTURE ,
+				path , true , utime ,true, RESOURCE_TYPE.WEB_TEXTURE ,
 				ENCRYPT_TYPE.NORMAL , null,this.m_delErrorCallback ,null);
 			this.m_lstOwner.Add(owner);
 			return owner;
@@ -122,7 +122,7 @@ namespace Game.Resource
 		public ResourceRequireOwner RequestAssetBundle( string path)
 		{
 			ResourceRequireOwner owner = ResourceMgr.RequestResouce(
-				path , 0 , 0 , false , 0 , true , RESOURCE_TYPE.WEB_ASSETBUNLDE ,
+				path , false , 0 , true , RESOURCE_TYPE.WEB_ASSETBUNLDE ,
 				ENCRYPT_TYPE.NORMAL , null,this.m_delErrorCallback , null);
 			this.m_lstOwner.Add(owner);
 			return owner;
@@ -137,7 +137,7 @@ namespace Game.Resource
 		public ResourceRequireOwner RequestAssetBundle( string path , long utime )
 		{
 			ResourceRequireOwner owner = ResourceMgr.RequestResouce(
-				path , 0 , 0 , true , utime , true , RESOURCE_TYPE.WEB_ASSETBUNLDE ,
+				path , true , utime , true , RESOURCE_TYPE.WEB_ASSETBUNLDE ,
 				ENCRYPT_TYPE.NORMAL , null ,this.m_delErrorCallback , null);
 			this.m_lstOwner.Add(owner);
 			return owner;
@@ -154,7 +154,7 @@ namespace Game.Resource
 		public ResourceRequireOwner RequestTextStr( string path)
 		{
 			ResourceRequireOwner owner =  ResourceMgr.RequestResouce(
-				path , 0 , 0 , false , 0 , true , RESOURCE_TYPE.WEB_TEXT_STR ,
+				path , false , 0 , true , RESOURCE_TYPE.WEB_TEXT_STR ,
 				ENCRYPT_TYPE.NORMAL , null , this.m_delErrorCallback , null
 				);
 			this.m_lstOwner.Add(owner);
@@ -170,7 +170,7 @@ namespace Game.Resource
 		public ResourceRequireOwner RequestTextStr( string path , long utime )
 		{
 			ResourceRequireOwner owner = ResourceMgr.RequestResouce(
-				path , 0 , 0 , true , utime , true , RESOURCE_TYPE.WEB_TEXT_STR ,
+				path , true , utime , true , RESOURCE_TYPE.WEB_TEXT_STR ,
 				ENCRYPT_TYPE.NORMAL , null , this.m_delErrorCallback , null
 				);
 			this.m_lstOwner.Add(owner);
@@ -187,7 +187,7 @@ namespace Game.Resource
 		public ResourceRequireOwner RequestTextBytes( string path)
 		{
 			ResourceRequireOwner owner = ResourceMgr.RequestResouce(
-				path , 0 , 0 , false , 0 , true , RESOURCE_TYPE.WEB_TEXT_BYTES ,
+				path , false , 0 , true , RESOURCE_TYPE.WEB_TEXT_BYTES ,
 				ENCRYPT_TYPE.NORMAL , null , this.m_delErrorCallback , null
 				);
 			this.m_lstOwner.Add(owner);
@@ -203,7 +203,7 @@ namespace Game.Resource
 		public ResourceRequireOwner RequestTextBytes( string path , long utime )
 		{
 			ResourceRequireOwner owner = ResourceMgr.RequestResouce(
-				path , 0 , 0 , true , utime , true , RESOURCE_TYPE.WEB_TEXT_BYTES ,
+				path , true , utime , true , RESOURCE_TYPE.WEB_TEXT_BYTES ,
 				ENCRYPT_TYPE.NORMAL , null , this.m_delErrorCallback , null
 				);
 			this.m_lstOwner.Add(owner);
@@ -220,7 +220,7 @@ namespace Game.Resource
 		public ResourceRequireOwner RequestAudioClip( string path)
 		{
 			ResourceRequireOwner owner = ResourceMgr.RequestResouce(
-				path , 0 , 0 , false , 0 , true , RESOURCE_TYPE.WEB_AUDIOCLIP ,
+				path , false , 0 , true , RESOURCE_TYPE.WEB_AUDIOCLIP ,
 				ENCRYPT_TYPE.NORMAL , null , this.m_delErrorCallback , null
 				);
 			this.m_lstOwner.Add(owner);
@@ -236,7 +236,7 @@ namespace Game.Resource
 		public ResourceRequireOwner RequestAudioClip( string path , long utime )
 		{
 			ResourceRequireOwner owner = ResourceMgr.RequestResouce(
-				path , 0 , 0 , true , utime , true , RESOURCE_TYPE.WEB_AUDIOCLIP ,
+				path , true , utime , true , RESOURCE_TYPE.WEB_AUDIOCLIP ,
 				ENCRYPT_TYPE.NORMAL , null , this.m_delErrorCallback , null
 				);
 			this.m_lstOwner.Add(owner);
@@ -253,7 +253,7 @@ namespace Game.Resource
 		public ResourceRequireOwner RequestMovie( string path)
 		{
 			ResourceRequireOwner owner = ResourceMgr.RequestResouce(
-				path , 0 , 0 , false , 0 , true , RESOURCE_TYPE.WEB_MOVIETEXTURE ,
+				path , false , 0 , true , RESOURCE_TYPE.WEB_MOVIETEXTURE ,
 				ENCRYPT_TYPE.NORMAL , null , this.m_delErrorCallback , null
 				);
 			this.m_lstOwner.Add(owner);
@@ -269,7 +269,7 @@ namespace Game.Resource
 		public ResourceRequireOwner RequestMovie( string path , long utime )
 		{
 			ResourceRequireOwner owner = ResourceMgr.RequestResouce(
-				path , 0 , 0 , true , utime , true , RESOURCE_TYPE.WEB_MOVIETEXTURE ,
+				path , true , utime , true , RESOURCE_TYPE.WEB_MOVIETEXTURE ,
 				ENCRYPT_TYPE.NORMAL , null , this.m_delErrorCallback , null
 				);
 			this.m_lstOwner.Add(owner);

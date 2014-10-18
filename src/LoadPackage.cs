@@ -4,7 +4,7 @@ using System.Collections;
 using UnityEngine;
 
 using DOWN_FINISH_CALLBACK = System.Action<string , object>;
-using DOWN_ERROR_CALLBACK = System.Action<string>;
+using DOWN_ERROR_CALLBACK = System.Action<string , object>;
 
 //  LoadPackage.cs
 //  Lu Zexi
@@ -19,7 +19,6 @@ namespace Game.Resource
     public class LoadPackage : MonoBehaviour
     {
         private string m_strPath;   //加载路径
-        private uint m_iCRC; //CRC码
 		private long m_lUTime;	//Unix Time
         private bool m_bComplete;   //是否加载完成
         public bool Complete
@@ -36,13 +35,11 @@ namespace Game.Resource
 				return this.m_fProgess;
             }
         }
-        //public delegate void Func(string str, object asset);
 		private DOWN_FINISH_CALLBACK m_cCallBack;   //回调方法
 		private DOWN_ERROR_CALLBACK m_cErrorCallBack;	//error callback.
         private DecryptBytesFunc m_delDecryptFunc;  //解密接口
         private ENCRYPT_TYPE m_eEncryptType;    //加密类型
         private RESOURCE_TYPE m_eResType;   //资源类型
-        private int m_iVersion; //版本
 		private bool m_bAutoSave;	//auto save function.
 
         /// <summary>
@@ -56,32 +53,49 @@ namespace Game.Resource
         /// <param name="encrypt_type"></param>
         /// <param name="decryptFunc"></param> 
 		public static LoadPackage StartWWW(
-			string path, uint crc, int version , bool autosave , long utime , DOWN_FINISH_CALLBACK callback,
-			DOWN_ERROR_CALLBACK error_call,
-			RESOURCE_TYPE res_type, ENCRYPT_TYPE encrypt_type, DecryptBytesFunc decryptFunc
+			string path ,
+			bool autosave = false , long utime = 0 , DOWN_FINISH_CALLBACK callback = null,
+			DOWN_ERROR_CALLBACK error_call = null,
+			RESOURCE_TYPE res_type = RESOURCE_TYPE.WEB_ASSETBUNLDE,
+			ENCRYPT_TYPE encrypt_type = ENCRYPT_TYPE.NORMAL,
+			DecryptBytesFunc decryptFunc = null
 			)
         {
             GameObject obj = new GameObject("WWWLoad");
             LoadPackage loader = obj.AddComponent<LoadPackage>();
             loader.Init(
-				path, crc, version , autosave ,utime , callback,error_call,
+				path , autosave ,utime , callback,error_call,
 				res_type, encrypt_type, decryptFunc);
             loader.StartCoroutine("Load");
             return loader;
         }
 
+		/// <summary>
+		/// Restart this instance.
+		/// </summary>
+		public void Restart()
+		{
+			this.m_bComplete = true;
+			this.m_cWww = null;
+			this.m_fProgess = 0;
+			StartCoroutine("Load");
+		}
+
         /// <summary>
         /// 初始化
         /// </summary>
         /// <param name="id"></param>
-		public void Init(
-			string path, uint crc, int version , bool autosave , long utime,
-			DOWN_FINISH_CALLBACK callback,DOWN_ERROR_CALLBACK error_call,
-			RESOURCE_TYPE res_type, ENCRYPT_TYPE encrypt_type, DecryptBytesFunc decryptFunc
+		private void Init(
+			string path ,
+			bool autosave = false, long utime = 0,
+			DOWN_FINISH_CALLBACK callback = null,
+			DOWN_ERROR_CALLBACK error_call = null,
+			RESOURCE_TYPE res_type = RESOURCE_TYPE.WEB_ASSETBUNLDE,
+			ENCRYPT_TYPE encrypt_type = ENCRYPT_TYPE.NORMAL,
+			DecryptBytesFunc decryptFunc = null
 			)
         {
             this.m_strPath = path;
-            this.m_iCRC = crc;
 			this.m_lUTime = utime;
             this.m_bComplete = false;
             this.m_cWww = null;
@@ -90,7 +104,6 @@ namespace Game.Resource
             this.m_delDecryptFunc = decryptFunc;
             this.m_eEncryptType = encrypt_type;
             this.m_eResType = res_type;
-            this.m_iVersion = version;
 			this.m_fProgess = 0;
 			this.m_bAutoSave = autosave;
         }
@@ -107,21 +120,11 @@ namespace Game.Resource
         /// 加载
         /// </summary>
         /// <returns></returns>
-        public IEnumerator Load()
+        private IEnumerator Load()
         {
-		StartLoad:
             string path = "";
             path += this.m_strPath;
-            //Debug.Log("version " + this.m_iVersion);
-            //Debug.Log("path " + this.m_strPath);
-            if (this.m_iVersion >= 0 && !this.m_bAutoSave)
-			{
-                this.m_cWww = WWW.LoadFromCacheOrDownload(path, this.m_iVersion, this.m_iCRC);
-			}
-            else
-            {
-                this.m_cWww = new WWW(path);
-            }
+			this.m_cWww = new WWW(path);
 
 			for( ;!this.m_cWww.isDone; )
 			{
@@ -129,18 +132,13 @@ namespace Game.Resource
 				yield return new WaitForSeconds(0);
 			}
 
-            //yield return this.m_cWww;
-
-            //Debug.Log("www " + this.m_cWww.isDone  + " path " + this.m_strPath);
-
             if (this.m_cWww.error != null)
             {
                 Debug.Log(m_cWww.error);
 				if(this.m_cErrorCallBack != null )
 				{
-					this.m_cErrorCallBack(this.m_cWww.error);
+					this.m_cErrorCallBack(this.m_cWww.error,this);
 				}
-                goto StartLoad;
             }
             else
             {

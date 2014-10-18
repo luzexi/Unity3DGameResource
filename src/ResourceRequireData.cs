@@ -20,8 +20,6 @@ namespace Game.Resource
 	{
 		private string m_strFilePath;       //资源地址
 		private Uri m_cPathUri;	//the path of uri
-		private uint m_iCRC; //CRC码
-		private int m_iVersion; //资源版本
 		private long m_lUTime;	//Unix Time
 		private bool m_bAutoSave;	//auto save of the resources.
 		private bool m_bAutoClear;	//auto clear of the resources.
@@ -50,14 +48,12 @@ namespace Game.Resource
 		}
 		
 		public ResourceRequireData(
-			string path, uint crc, int version , bool autosave , long utime , bool autoClear ,
+			string path , bool autosave , long utime , bool autoClear ,
 			RESOURCE_TYPE type, ENCRYPT_TYPE encrypt_type, DecryptBytesFunc decryptFunc
 			)
 		{
 			this.m_strFilePath = path;
 			this.m_cPathUri = new Uri(path);
-			this.m_iCRC = crc;
-			this.m_iVersion = version;
 			this.m_lUTime = utime;
 			this.m_bAutoSave = autosave;
 			this.m_bAutoClear = autoClear;
@@ -92,7 +88,7 @@ namespace Game.Resource
 			this.m_bStart = true;
 
 			this.m_cLoader = LoadPackage.StartWWW(
-				this.m_strFilePath, this.m_iCRC, this.m_iVersion , this.m_bAutoSave , this.m_lUTime , LoaderCallBack,
+				this.m_strFilePath , this.m_bAutoSave , this.m_lUTime , LoaderCallBack,
 				ErrorCallBack , this.m_eResType, this.m_eEncryType, this.m_funDecryptFunc);
 			this.m_cLoader.transform.parent = ResourceMgr.sInstance.transform;
 		}
@@ -135,13 +131,13 @@ namespace Game.Resource
 		/// error of the loader callback
 		/// </summary>
 		/// <param name="str">String.</param>
-		private void ErrorCallBack(string str )
+		private void ErrorCallBack(string str, object obj )
 		{
 			foreach (ResourceRequireOwner item in this.m_lstOwners)
 			{
 				if (item.m_delErrorCall != null)
 				{
-					item.m_delErrorCall(str);
+					item.m_delErrorCall(str , obj );
 				}
 			}
 		}

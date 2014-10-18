@@ -11,7 +11,7 @@ using UnityEngine;
 namespace Game.Resource
 {
 	using REQUEST_FINISH_CALLBACK = System.Action<string , object , object[]>;
-	using REQUEST_ERROR_CALLBACK = System.Action<string>;
+	using REQUEST_ERROR_CALLBACK = System.Action<string , object>;
 
     public delegate byte[] DecryptBytesFunc(byte[] datas);  //解密接口
 
@@ -386,7 +386,7 @@ namespace Game.Resource
         /// <param name="error_call">Error_call.</param>
         /// <param name="arg">Argument.</param>
 		public static ResourceRequireOwner RequestResouce(
-			string path, uint crc, int version , bool autoSave , long utime , bool autoClear , RESOURCE_TYPE resType,
+			string path , bool autoSave , long utime , bool autoClear , RESOURCE_TYPE resType,
 			ENCRYPT_TYPE encrypt_type, REQUEST_FINISH_CALLBACK func ,
 			REQUEST_ERROR_CALLBACK error_call,object[] arg
 			)
@@ -451,7 +451,7 @@ namespace Game.Resource
             else
             {
 				ResourceRequireData rrd = new ResourceRequireData(
-					path , crc , version , autoSave ,utime ,autoClear, resType,
+					path , autoSave ,utime ,autoClear, resType,
 					encrypt_type, sInstance.m_delDecryptFunc);
 				sInstance.m_lstRequires.Add(rrd);
 				sInstance.m_mapRes.Add(resName, rrd);
