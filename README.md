@@ -1,7 +1,7 @@
 Unity3DGameResource
 ===================
 <br>
-关于unity3d的技术文章请前往 http://www.luzexi.com<br>
+关于unity3d的动态资源文章请前往 http://www.luzexi.com/unity3d%E4%B9%8B%E5%A6%82%E4%BD%95%E5%B0%86%E5%8C%85%E5%A4%A7%E5%B0%8F%E5%87%8F%E5%B0%91%E5%88%B0%E6%9E%81%E8%87%B4/<br>
 封装unity3d的资源加载。<br>
 将几种资源加载接口封装起来，包括www,resouces,editor。<br>
 目的是让资源加载与释放便得更加简单，缩短开发时间。<br>
