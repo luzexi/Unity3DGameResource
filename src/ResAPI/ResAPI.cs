@@ -32,7 +32,7 @@ namespace Game.Resource
 		}
 
 		//
-		public void Request(string path , RESOURCE_TYPE resType = RESOURCE_TYPE.WEB_ASSETBUNLDE , long utime = 0 )
+		public virtual void Request(string path , RESOURCE_TYPE resType = RESOURCE_TYPE.WEB_ASSETBUNLDE , long utime = 0 )
 		{
 			if( !this.m_mapRes.ContainsKey(path) )
 			{
@@ -50,7 +50,7 @@ namespace Game.Resource
 		}
 
 		//
-		private void finish_callback(string path , object obj)
+		protected virtual void finish_callback(string path , object obj)
 		{
 			this.m_mapRes[path] = obj;
 		}
