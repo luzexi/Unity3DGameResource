@@ -133,7 +133,7 @@ namespace Game.Resource
 		/// </summary>
 		/// <returns>The asset bundle.</returns>
 		/// <param name="path">Path.</param>
-		/// <param name="arg">Argument.</param>
+        /// <param name="utime">Utime.</param>
 		public ResourceRequireOwner RequestAssetBundle( string path , long utime )
 		{
 			ResourceRequireOwner owner = ResourceMgr.RequestResouce(

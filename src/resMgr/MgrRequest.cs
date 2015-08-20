@@ -37,7 +37,7 @@ namespace Game.Resource
 		/// </summary>
 		/// <returns>The texture.</returns>
 		/// <param name="path">Path.</param>
-		/// <param name="arg">Argument.</param>
+        /// <param name="utime">uTime.</param>
 		public static ResourceRequireOwner RequestTexture( string path , long utime )
 		{
 			return RequestResouce(
@@ -102,7 +102,7 @@ namespace Game.Resource
 		/// </summary>
 		/// <returns>The asset bundle.</returns>
 		/// <param name="path">Path.</param>
-		/// <param name="arg">Argument.</param>
+        /// <param name="utime">Utime.</param>
 		public static ResourceRequireOwner RequestAssetBundle( string path , long utime )
 		{
 			return RequestResouce(
@@ -125,7 +125,7 @@ namespace Game.Resource
 			)
 		{
 			return RequestResouce(
-				path , true ,0 , true , RESOURCE_TYPE.WEB_ASSETBUNLDE ,
+				path , false ,0 , true , RESOURCE_TYPE.WEB_ASSETBUNLDE ,
 				ENCRYPT_TYPE.NORMAL , finish_callback ,error_callback, arg);
 		}
 
@@ -192,7 +192,7 @@ namespace Game.Resource
 				)
 		{
 			return RequestResouce(
-				path , true ,0 , true , RESOURCE_TYPE.WEB_TEXT_STR ,
+				path , false ,0 , true , RESOURCE_TYPE.WEB_TEXT_STR ,
 				ENCRYPT_TYPE.NORMAL , finish_callback ,error_callback, arg
 				);
 		}
@@ -262,7 +262,7 @@ namespace Game.Resource
 				)
 		{
 			return RequestResouce(
-				path , true ,0 , true , RESOURCE_TYPE.WEB_TEXT_BYTES ,
+				path , false ,0 , true , RESOURCE_TYPE.WEB_TEXT_BYTES ,
 				ENCRYPT_TYPE.NORMAL , finish_callback ,error_callback, arg
 				);
 		}
@@ -332,7 +332,7 @@ namespace Game.Resource
 				)
 		{
 			return RequestResouce(
-				path , true ,0 , true , RESOURCE_TYPE.WEB_AUDIOCLIP ,
+				path , false ,0 , true , RESOURCE_TYPE.WEB_AUDIOCLIP ,
 				ENCRYPT_TYPE.NORMAL , finish_callback ,error_callback, arg
 				);
 		}
@@ -402,7 +402,7 @@ namespace Game.Resource
 				)
 		{
 			return RequestResouce(
-				path , true ,0 , true , RESOURCE_TYPE.WEB_MOVIETEXTURE ,
+				path , false ,0 , true , RESOURCE_TYPE.WEB_MOVIETEXTURE ,
 				ENCRYPT_TYPE.NORMAL , finish_callback ,error_callback, arg
 				);
 		}
