@@ -368,15 +368,11 @@ namespace Game.Resource
             //GC.Collect();
         }
 
-
-
         /// <summary>
         /// Requests the resouce.
         /// </summary>
         /// <returns>The resouce.</returns>
         /// <param name="path">Path.</param>
-        /// <param name="crc">Crc.</param>
-        /// <param name="version">Version.</param>
         /// <param name="autoSave">If set to <c>true</c> auto save.</param>
         /// <param name="utime">Utime.</param>
         /// <param name="autoClear">If set to <c>true</c> auto clear.</param>

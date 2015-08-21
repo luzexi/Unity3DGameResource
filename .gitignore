@@ -1,3 +1,20 @@
 .DS_Store
 *.meta
 
+
+
+#Visual Studio/ Monodevelop generated
+ExportedObj/
+*.svd
+*.userprefs
+*.pidb
+*.suo
+*.user
+*.unityproj
+*.booproj
+*.sln
+*.csproj
+
+obj/
+bin/
+libs/
