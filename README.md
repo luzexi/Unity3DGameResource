@@ -31,12 +31,12 @@ unity3d 资源加载 API
   You can choose the encrypt type.
 
 ### 接口描述 (interface description)
-  1.WWW load function.
-  2.File load function. (include sync load and async load)
-  3.AssetBundle load function. (include CreateFromFile , CreateFromMemory , and CreateFromMemoryImmediate)
-  4.Resources stay load function. (the resources will storage in the memory if you not clear it)
-  5.Resources no stay load function. (the resources will not storage in the memory)
-  6.Resources load by unity3d api. (resources is load by Resources.Load)
+    1.WWW load function.
+    2.File load function. (include sync load and async load)
+    3.AssetBundle load function. (include CreateFromFile , CreateFromMemory , and CreateFromMemoryImmediate)
+    4.Resources stay load function. (the resources will storage in the memory if you not clear it)
+    5.Resources no stay load function. (the resources will not storage in the memory)
+    6.Resources load by unity3d api. (resources is load by Resources.Load)
 
 ### 未完成 ， 未测试(Sorry , it is not complete)
 
