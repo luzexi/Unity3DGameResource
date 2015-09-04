@@ -6,8 +6,8 @@ using System.Collections;
 
 namespace GameResource
 {
-	//file util
-	public class CFile
+	//file loader
+	public class FileLoader
 	{
 		public delegate FINISH_CALLBACK(string path, byte[] obj);
         public delegate ERROR_CALLBACK(string path, string error);
