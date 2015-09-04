@@ -4,6 +4,11 @@ using System.IO;
 using System.Collections;
 
 
+//	FileLoader.cs
+//	Author: Lu Zexi
+//	2015-09-04
+
+
 namespace GameResource
 {
 	//file loader
