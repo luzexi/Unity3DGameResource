@@ -6,12 +6,12 @@ using System.Text;
 
 
 
-//  ResourcesTool.cs
+//  CEncrypt.cs
 //  Lu Zexi
 //  2012-9-18
 
 
-namespace Game.Resource
+namespace GameResource
 {
     /// <summary>
     /// 加解密

@@ -8,14 +8,14 @@ using System.Collections.Generic;
 //	2014-10-19
 
 
-namespace Game.Resource
+namespace GameResource
 {
 	//singleton mono
-	public abstract class SingletonMono<T> : MonoBehaviour
+	private abstract class SingletonMono<T> : MonoBehaviour
 		where T : MonoBehaviour
 	{
 		private static T s_cInstance;
-		public static T sInstance
+		public static T I
 		{
 			get
 			{
@@ -30,21 +30,21 @@ namespace Game.Resource
 		
 		void Awake()
 		{
-			init();
+			Init();
 		}
 		
 		void OnDestroy()
 		{
-			destory();
+			onDestroy();
 		}
 		
 		//destory
-		protected virtual void destory()
+		protected virtual void onDestroy()
 		{
 			s_cInstance = null;
 		}
 		
 		//init
-		protected virtual void init(){}
+		protected virtual void Init(){}
 	}
 }

@@ -3,7 +3,7 @@ using UnityEngine;
 using System;
 using System.Collections;
 
-namespace Game.Resource
+namespace GameResource
 {
 	//zip manager
 	public class ZipManager : SingletonMono<ZipManager>

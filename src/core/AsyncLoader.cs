@@ -8,63 +8,54 @@ using System.Collections.Generic;
 //  2013-12-16
 
 
-/// <summary>
-/// Async Load The AssetBundle
-/// </summary>
-public class AsyncLoader : MonoBehaviour
+
+namespace GameResource
 {
-    private AssetBundleRequest m_cRequest;  //The load request
-
-    /// <summary>
-    /// Start async load the assetbundle
-    /// </summary>
-    /// <param name="asset"></param>
-    /// <param name="resName"></param>
-    /// <param name="callback"></param>
-    public static AsyncLoader StartLoad(AssetBundle asset, string resName)
+    // Async Load The AssetBundle
+    public class AsyncLoader : MonoBehaviour
     {
-        GameObject obj = new GameObject("AsyncLoader");
-        AsyncLoader loader = obj.AddComponent<AsyncLoader>();
-        loader.StartCoroutine(loader.GoLoader(asset, resName));
-        return loader;
-    }
+        public delegate FINISH_CALLBACK(string name, UnityEngine.Object obj);
 
-    /// <summary>
-    /// Begin load
-    /// </summary>
-    /// <param name="asset"></param>
-    /// <param name="resName"></param>
-    /// <returns></returns>
-    public IEnumerator GoLoader(AssetBundle asset, string resName)
-    {
-        this.m_cRequest = asset.LoadAsync(resName, typeof(UnityEngine.Object));
+        private static GameObject sGoInstance;  //singleton gameobject instance
 
-        for (; !this.m_cRequest.isDone; )
-            yield return this.m_cRequest;
+        private float m_fProgress;  //progress
+        private FINISH_CALLBACK m_delFinishCallback;    //finish callback
+        private AssetBundleRequest m_cRequest;  //The load request
 
-        GameObject.Destroy(this.gameObject);
-    }
+        //Start async load the assetbundle
+        public static AsyncLoader StartLoad(AssetBundle asset, string resName , FINISH_CALLBACK finish_callback)
+        {
+            if(sGoInstance == null)
+            {
+                sGoInstance = new GameObject("AsyncLoader");
+            }
+            AsyncLoader loader = sGoInstance.AddComponent<AsyncLoader>();
+            loader.StartCoroutine(loader.GoLoader(asset, resName,finish_callback));
+            return loader;
+        }
+        
+        //Begin to load
+        private IEnumerator GoLoader(AssetBundle asset, string resName , FINISH_CALLBACK finish_callback)
+        {
+            this.m_delFinishCallback = finish_callback;
+            this.m_fProgress = 0;
+            this.m_cRequest = asset.LoadAsync(resName, typeof(UnityEngine.Object));
 
-    /// <summary>
-    /// Get the progress of the async loading
-    /// </summary>
-    /// <returns></returns>
-    public float Progress()
-    {
-        if (this.m_cRequest == null)
-            return 0;
-        if (this.m_cRequest.progress >= 1f && !this.m_cRequest.isDone)
-            return 0.99f;
-        return this.m_cRequest.progress;
-    }
+            for (; !this.m_cRequest.isDone; )
+            {
+                this.m_fProgress = this.m_cRequest.progress;
+                yield return new WaitForEndOfFrame();
+            }
+            this.m_fProgress = 1;
 
-    /// <summary>
-    /// Get the assetof the request
-    /// </summary>
-    /// <returns></returns>
-    public UnityEngine.Object GetAsset()
-    {
-        return this.m_cRequest.asset;
+            GameObject.Destroy(this);
+        }
+
+        //Get the progress of the async loading
+        public float GetProgress()
+        {
+            return this.m_fProgress;
+        }
     }
 
 }
