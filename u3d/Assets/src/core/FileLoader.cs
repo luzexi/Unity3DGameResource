@@ -1,5 +1,6 @@
 using UnityEngine;
 using System;
+using System.Threading;
 using System.IO;
 using System.Collections;
 
@@ -14,8 +15,8 @@ namespace GameResource
 	//file loader
 	public class FileLoader
 	{
-		public delegate FINISH_CALLBACK(string path, byte[] obj);
-        public delegate ERROR_CALLBACK(string path, string error);
+		public delegate void FINISH_CALLBACK(string path, byte[] obj);
+        public delegate void ERROR_CALLBACK(string path, string error);
 
         private byte[] m_Buffer { get; set; }	//buffer
         private int m_BufferSize { get; set; }	//data buffer size
@@ -134,10 +135,10 @@ namespace GameResource
 		}
 
 		//async read file
-		public static CFile AsyncReadFile(string path , FINISH_CALLBACK finish_callback , ERROR_CALLBACK error_callback = null)
+		public static FileLoader AsyncReadFile(string path , FINISH_CALLBACK finish_callback , ERROR_CALLBACK error_callback = null)
 		{
-			CFile cfile = new CFile();
-			file.AsyncBeginReadFile(path , finish_callback , error_callback);
+			FileLoader cfile = new FileLoader();
+			cfile.AsyncBeginReadFile(path , finish_callback , error_callback);
 			return cfile;
 		}
 

@@ -8,7 +8,8 @@ namespace GameResource
 	//zip manager
 	public class ZipManager : SingletonMono<ZipManager>
 	{
-		protected override void init() {
+		protected override void Init()
+		{
 	    	StartCoroutine("ZipUpdate");
 	  	}
 		

@@ -25,6 +25,14 @@ namespace GameResource
 		private List<AssetBundleLoader> m_lstLoader = new List<AssetBundleLoader>();	//list loader
 		private Dictionary<string , AssetBundle> m_mapRes = new Dictionary<string, AssetBundle>();	//the resource map
 
+		public float Progress
+		{
+			get
+			{
+				return 1;
+			}
+		}
+
 		//create request
 		public static AbRequest Create(FINISH_CALLBACK finish_callback = null , ERROR_CALLBACK error_callback = null)
 		{

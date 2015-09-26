@@ -11,7 +11,7 @@ using System.Collections.Generic;
 namespace GameResource
 {
 	//singleton mono
-	private abstract class SingletonMono<T> : MonoBehaviour
+	public abstract class SingletonMono<T> : MonoBehaviour
 		where T : MonoBehaviour
 	{
 		private static T s_cInstance;

@@ -58,7 +58,7 @@ namespace GameResource
 			for(int i = 0 ; i < paths.Count ; i++)
 			{
 				string path = paths[i];
-				if(!this.m_mapRes.ContainKey(path))
+				if(!this.m_mapRes.ContainsKey(path))
 				{
 					this.m_mapRes.Add(path,null);
 					this.m_AbRequest.Request(path);
@@ -69,7 +69,7 @@ namespace GameResource
 		//request finish callback
 		private void RequestFinishCallback(Dictionary<string,AssetBundle> res)
 		{
-			foreach( KeyValePair<string,AssetBundle> item in res )
+			foreach( KeyValuePair<string,AssetBundle> item in res )
 			{
 				this.m_mapRes[item.Key] = item.Value;
 			}

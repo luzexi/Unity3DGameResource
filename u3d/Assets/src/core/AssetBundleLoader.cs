@@ -15,8 +15,8 @@ namespace GameResource
     {
         private static GameObject sGoInstance = null;  //gameobject
 
-        public delegate FINISH_CALLBACK(string path, AssetBundle obj);
-        public delegate ERROR_CALLBACK(string path, string error);
+        public delegate void FINISH_CALLBACK(string path, AssetBundle ob);
+        public delegate void ERROR_CALLBACK(string path, string error);
 
         private string m_strPath;   //加载路径
         private bool m_bComplete;   //是否加载完成
@@ -62,8 +62,8 @@ namespace GameResource
             }
             
             AssetBundleLoader loader = sGoInstance.AddComponent<AssetBundleLoader>();
-            loader.Init(path , finish_callback , error_callback);
-            loader.StartCoroutine(loader.StartWWW());
+            loader.Init(binary , finish_callback , error_callback);
+            loader.StartCoroutine(loader.StartBinary());
             return loader;
         }
 

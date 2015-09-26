@@ -14,7 +14,7 @@ namespace GameResource
     // Async Load The AssetBundle
     public class AsyncLoader : MonoBehaviour
     {
-        public delegate FINISH_CALLBACK(string name, UnityEngine.Object obj);
+        public delegate void FINISH_CALLBACK(string name, UnityEngine.Object obj);
 
         private static GameObject sGoInstance;  //singleton gameobject instance
 
