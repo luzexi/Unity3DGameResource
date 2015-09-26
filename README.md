@@ -38,7 +38,7 @@ unity3d 资源加载 API
     5.Resources no stay load function. (the resources will not storage in the memory)
     6.Resources load by unity3d api. (resources is load by Resources.Load)
 
-### 未完成 ， 未测试(Sorry , it is not complete)
+### 正在测试完善中 ( All of the API is testing now. )
 
 
 关于unity3d的技术文章请前往 http://www.luzexi.com
