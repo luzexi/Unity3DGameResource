@@ -30,7 +30,7 @@ namespace GameResource
         private AssetBundleCreateRequest m_cABRequest;  //assetbundle create request
         private byte[] m_cData; //assetbundle data
         private float m_fProgess;   //the progess of the www.
-        public float Progess
+        public float Progress
         {
             get
             {
@@ -134,7 +134,7 @@ namespace GameResource
             {
                 this.m_cFinishCallBack("",this.m_cABRequest.assetBundle);
             }
-            GameObject.Destroy(this);
+            GameObject.Destroy(this.gameObject);
         }
 
         //start www load
@@ -172,7 +172,7 @@ namespace GameResource
 
             this.m_cWww.Dispose();
             this.m_cWww = null;
-            GameObject.Destroy(this);
+            GameObject.Destroy(this.gameObject);
         }
 
     }

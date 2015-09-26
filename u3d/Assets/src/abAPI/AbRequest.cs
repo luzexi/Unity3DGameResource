@@ -33,7 +33,7 @@ namespace GameResource
 				for(int i = 0; i<this.m_lstLoader.Count ; i++)
 				{
 					AssetBundleLoader abl = this.m_lstLoader[i];
-					sum += abl.Progess;
+					sum += abl.Progress;
 				}
 				return sum / this.m_lstLoader.Count;
 			}
