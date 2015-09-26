@@ -29,7 +29,13 @@ namespace GameResource
 		{
 			get
 			{
-				return 1;
+				float sum = 0;
+				for(int i = 0; i<this.m_lstLoader.Count ; i++)
+				{
+					AssetBundleLoader abl = this.m_lstLoader[i];
+					sum += abl.Progess;
+				}
+				return sum / this.m_lstLoader.Count;
 			}
 		}
 
