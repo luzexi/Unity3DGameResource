@@ -1,40 +1,37 @@
-﻿using UnityEngine;
+using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
 
 using GameResource;
 
 
-public class example_test1 : MonoBehaviour
+public class example_test2 : MonoBehaviour
 {
-	AbRequest req = null;
 	List<string> paths = new List<string>();
 
 	// Use this for initialization
 	void Start ()
 	{
-		this.req = AbRequest.Create(finish_callback , error_callback);
-
+		AbMgr.I.Clear();
 		string path = "file:///"+Application.dataPath + "/item.unity3d";
 		this.paths.Add(path);
-		req.Request(path);
 
 		path = "file:///"+Application.dataPath + "/Terrain.unity3d";
 		this.paths.Add(path);
-		req.Request(path);
 
 		path = "file:///"+Application.dataPath + "/Button.unity3d";
 		this.paths.Add(path);
-		req.Request(path);
+
+		AbMgr.I.Request(this.paths , finish_callback , error_callback);
 	}
 
-	private void finish_callback(Dictionary<string , AssetBundle> res)
+	private void finish_callback()
 	{
+		Debug.Log("Finished");
 		for(int i = 0 ; i<this.paths.Count ; i++)
 		{
-			GameObject.Instantiate(res[paths[i]].mainAsset);
+			GameObject.Instantiate(AbMgr.I.GetAssetBundle(paths[i]).mainAsset);
 		}
-		this.req.Disport();
 	}
 
 	private void error_callback(string path , string error)
@@ -50,9 +47,8 @@ public class example_test1 : MonoBehaviour
 
 	void OnGUI()
 	{
-		if(this.req != null)
 		{
-			GUI.Label(new Rect(0,0,100,40),"Progress " + this.req.Progress);
+			GUI.Label(new Rect(0,0,100,40),"Progress " + AbMgr.I.Progress);
 		}
 	}
 }

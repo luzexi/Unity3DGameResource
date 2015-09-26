@@ -64,6 +64,25 @@ namespace GameResource
 			}
 		}
 
+		//disport
+		public void Disport()
+		{
+			this.m_lstLoader.Clear();
+			foreach( KeyValuePair<string,AssetBundle> item in this.m_mapRes )
+			{
+				item.Value.Unload(false);
+			}
+			this.m_mapRes.Clear();
+		}
+
+		//get asset bundle
+		public AssetBundle GetAssetBundle(string name)
+		{
+			if(this.m_mapRes.ContainsKey(name))
+				return this.m_mapRes[name];
+			return null;
+		}
+
 		//error callback
 		protected void ErrorCallback(string path , string error)
 		{
