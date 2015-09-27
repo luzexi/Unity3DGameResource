@@ -182,7 +182,7 @@ namespace GameResource
 	            {
 	            	this.m_BufferSize += bytesRead;
 	                Thread.Sleep(TimeSpan.FromMilliseconds(10));
-	                this.m_InputStream.BeginRead(this.m_Buffer, this.m_BufferSize, this.m_Buffer.Length, AsyncReadCallback, null);
+	                this.m_InputStream.BeginRead(this.m_Buffer, this.m_BufferSize, this.m_Buffer.Length-this.m_BufferSize, AsyncReadCallback, null);
 	            }
 	            else
 	            {
