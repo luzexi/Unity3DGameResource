@@ -70,4 +70,4 @@ All of the example in the example folder. (所有示例都在example文件夹里
 > (如何将多个assetbundle打成zip的文件进行解压，并在解压后对其进行加载并呈现画面)
 
 ### TODO
-1.Assetbundle encrypt. (assetbundle 加密)
+1.Encrypt assetbundle. (assetbundle 加密)
