@@ -10,12 +10,12 @@ Email : jesse_luzexi@163.com
 Blog: http://www.luzexi.com (in chinese)
   
 
-### sync load (阻塞加载)
+### Load sync (阻塞加载)
 	1.Resource.Load
 	2.AssetBundle.CreateFromFile + AssetBundle.Load
 	3.File Read all + AssetBundle.CreateFromMemoryImmediate + AssetBundle.Load
 
-### async load (非阻塞加载)
+### Load async (非阻塞加载)
 	1.WWW + AssetBundle.Load
 	2.WWW + AssetBundle.LoadAsync
 	3.AssetBundle.CreateFromFile + AssetBundle.LoadAsync
@@ -25,13 +25,14 @@ Blog: http://www.luzexi.com (in chinese)
 	7.File Read async + AssetBundle.CreateFromMemory + AssetBundle.Load
 	8.File Read async + AssetBundle.CreateFromMemory + AssetBundle.LoadAsync
 
-### interface description (接口描述)
+### Interface description (接口描述)
     1.WWW load function.
     2.File load function. (include sync load and async load)
     3.AssetBundle load function. (include CreateFromFile , Load , LoadAsnyc, CreateFromMemory , and CreateFromMemoryImmediate)
     4.Resources stay load function. (the resources will storage in the memory if you not clear it)
     5.Resources no stay load function. (the resources will not storage in the memory)
     6.Resources load by unity3d api. (resources is load by Resources.Load)
+    7.ZipManager uncompress the zip file.
 
 ### Example (示例)
 All of the example in the example folder. (所有示例都在example文件夹里)
