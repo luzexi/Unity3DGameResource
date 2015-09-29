@@ -13,13 +13,13 @@ public class example_test2 : MonoBehaviour
 	void Start ()
 	{
 		AbMgr.I.Clear();
-		string path = "file:///"+Application.dataPath + "/item.unity3d";
+		string path = "file:///"+Application.dataPath + "/example/bundle/item.unity3d";
 		this.paths.Add(path);
 
-		path = "file:///"+Application.dataPath + "/Terrain.unity3d";
+		path = "file:///"+Application.dataPath + "/example/bundle/Terrain.unity3d";
 		this.paths.Add(path);
 
-		path = "file:///"+Application.dataPath + "/Button.unity3d";
+		path = "file:///"+Application.dataPath + "/example/bundle/Button.unity3d";
 		this.paths.Add(path);
 
 		AbMgr.I.Request(this.paths , finish_callback , error_callback);

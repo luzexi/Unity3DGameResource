@@ -14,7 +14,7 @@ public class example_test6 : MonoBehaviour
 	void Start ()
 	{
 		AssetBundle ab = null;
-		string path = ""+Application.dataPath + "/combine_uncompress.unity3d";
+		string path = ""+Application.dataPath + "/example/bundle/combine_uncompress.unity3d";
 
 		if(FileLoader.IsExist(path))
 		{

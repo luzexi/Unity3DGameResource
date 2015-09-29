@@ -15,7 +15,7 @@ public class example_test5 : MonoBehaviour
 	{
 		AssetBundle ab = null;
 
-		string path = ""+Application.dataPath + "/item.unity3d";
+		string path = ""+Application.dataPath + "/example/bundle/item.unity3d";
 		if(FileLoader.IsExist(path))
 		{
 			byte[] data = FileLoader.ReadAllBytes(path);

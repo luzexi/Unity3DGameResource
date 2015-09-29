@@ -13,7 +13,7 @@ public class example_test7 : MonoBehaviour
 	void Start ()
 	{
 		AssetBundle ab = null;
-		string path = ""+Application.dataPath + "/item_uncompress.unity3d";
+		string path = ""+Application.dataPath + "/example/bundle/item_uncompress.unity3d";
 
 		this.floader = FileLoader.AsyncReadFile(path , finish_callback , error_callback);
 	}

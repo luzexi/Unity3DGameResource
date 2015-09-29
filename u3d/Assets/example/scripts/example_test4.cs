@@ -12,7 +12,7 @@ public class example_test4 : MonoBehaviour
 	{
 		AssetBundle ab = null;
 
-		string path = ""+Application.dataPath + "/item.unity3d";
+		string path = ""+Application.dataPath + "/example/bundle/item.unity3d";
 		if(FileLoader.IsExist(path))
 		{
 			byte[] data = FileLoader.ReadAllBytes(path);
@@ -20,7 +20,7 @@ public class example_test4 : MonoBehaviour
 			GameObject.Instantiate(ab.mainAsset);
 		}
 
-		path = ""+Application.dataPath + "/Button.unity3d";
+		path = ""+Application.dataPath + "/example/bundle/Button.unity3d";
 		if(FileLoader.IsExist(path))
 		{
 			byte[] data = FileLoader.ReadAllBytes(path);
@@ -28,7 +28,7 @@ public class example_test4 : MonoBehaviour
 			GameObject.Instantiate(ab.mainAsset);
 		}
 
-		path = ""+Application.dataPath + "/Terrain.unity3d";
+		path = ""+Application.dataPath + "/example/bundle/Terrain.unity3d";
 		if(FileLoader.IsExist(path))
 		{
 			byte[] data = FileLoader.ReadAllBytes(path);

@@ -11,8 +11,8 @@ public class example_test8 : MonoBehaviour
 	// Use this for initialization
 	void Start ()
 	{
-		string path = ""+Application.dataPath + "/abzip.zip";
-		string dest_path = ""+Application.dataPath + "/ab_zip/";
+		string path = ""+Application.dataPath + "/example/bundle/abzip.zip";
+		string dest_path = ""+Application.dataPath + "/example/ab_zip/";
 		ZipManager.I.uncompless(path,dest_path,finish_callback,error_callback);
 	}
 
@@ -22,14 +22,14 @@ public class example_test8 : MonoBehaviour
 
 		AssetBundle ab = null;
 
-		string path = ""+Application.dataPath + "/ab_zip/item_uncompress.unity3d";
+		string path = ""+Application.dataPath + "/example/ab_zip/item_uncompress.unity3d";
 		if(FileLoader.IsExist(path))
 		{
 			ab = AssetBundleLoader.CreateFromFile(path);
 			GameObject.Instantiate(ab.mainAsset);
 		}
 
-		path = ""+Application.dataPath + "/ab_zip/Terrain_uncompress.unity3d";
+		path = ""+Application.dataPath + "/example/ab_zip/Terrain_uncompress.unity3d";
 		if(FileLoader.IsExist(path))
 		{
 			ab = AssetBundleLoader.CreateFromFile(path);
