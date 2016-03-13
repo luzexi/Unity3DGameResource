@@ -112,7 +112,7 @@ namespace GameResource
 			{
 				if(this.m_iLoadIndex < this.m_lstPath.Count)
 				{
-					for(int i=0 ; i<MAX_LOADER_NUM && i <this.m_lstPath.Count ; i++)
+					for(int i=0 ; i<MAX_LOADER_NUM && (this.m_iLoadIndex + i)<this.m_lstPath.Count ; i++)
 					{
 						AssetBundleLoader loader = AssetBundleLoader.LoadWww(this.m_lstPath[this.m_iLoadIndex+i],FinishCallback,ErrorCallback);
 						this.m_lstLoader.Add(loader);
